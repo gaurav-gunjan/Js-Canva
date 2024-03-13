@@ -41,6 +41,19 @@
         </div>
         <!-- Top Bar Menu -->
         <div class="palleon-top-bar-menu">
+            <div class="palleon-content-bar" style="top: 8px; right: 430px;">
+                <div class="palleon-img-size"><span id="palleon-img-width">0</span>px<span
+                        class="material-icons">clear</span><span id="palleon-img-height">0</span>px</div>
+                <button id="palleon-img-drag" class="palleon-btn"><span class="material-icons">pan_tool</span></button>
+                <div id="palleon-img-zoom-counter" class="palleon-counter">
+                    <button id="palleon-img-zoom-out" class="counter-minus palleon-btn"><span
+                            class="material-icons">remove</span></button>
+                    <input id="palleon-img-zoom" class="palleon-form-field numeric-field" type="text" value="100"
+                        autocomplete="off" data-min="10" data-max="200" data-step="5">
+                    <button id="palleon-img-zoom-in" class="counter-plus palleon-btn"><span
+                            class="material-icons">add</span></button>
+                </div>
+            </div>
             <!-- History -->
             <div class="palleon-undo">
                 <button id="palleon-undo" type="button" class="palleon-btn-simple tooltip" data-title="Undo"
@@ -73,7 +86,7 @@
                     <img alt="avatar" src='assets/avatar.png' /><span class="material-icons">arrow_drop_down</span>
                     <div class="menu-menu-container">
                         <ul id="palleon-be-menu" class="palleon-dropdown">
-                            <li><a href="https://balajiludo.com/canvas">Home</a></li>
+                            <li><a href="https://ksbminfotech.com/">Home</a></li>
                             <li><a href="https://ksbminfotech.com/">Developed By KSBM</a>
                             </li>
                         </ul>
@@ -9545,7 +9558,7 @@
                         <div class="palleon-control">
                             <select id="palleon-brush-select" class="palleon-select" autocomplete="off">
                                 <option value="pencil" selected>Pencil</option>
-                                <option value="circle">Circle</option>
+                                <option value="circle">Dotted</option>
                                 <!-- <option value="spray">Spray</option>
                                 <option value="hline">H-line Pattern</option>
                                 <option value="vline">V-line Pattern</option>
@@ -9557,7 +9570,7 @@
                     <div class="palleon-control-wrap">
                         <label class="palleon-control-label">Brush Width</label>
                         <div class="palleon-control">
-                            <input id="brush-width" class="palleon-form-field numeric-field" type="number" value="1"
+                            <input id="brush-width" class="palleon-form-field numeric-field" type="number" value="2"
                                 autocomplete="off" data-min="1" data-max="1000" data-step="1">
                         </div>
                     </div>
@@ -9719,7 +9732,7 @@
                         <canvas id="palleon-canvas"></canvas>
                     </div>
                     <!-- Zoom & Pan Buttons -->
-                    <div class="palleon-content-bar">
+                    <!-- <div class="palleon-content-bar">
                         <div class="palleon-img-size"><span id="palleon-img-width">0</span>px<span
                                 class="material-icons">clear</span><span id="palleon-img-height">0</span>px</div>
                         <button id="palleon-img-drag" class="palleon-btn"><span
@@ -9732,7 +9745,7 @@
                             <button id="palleon-img-zoom-in" class="counter-plus palleon-btn"><span
                                     class="material-icons">add</span></button>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <!-- Canvas Content END -->
             </div>

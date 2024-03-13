@@ -1221,6 +1221,9 @@
                 var key = Math.random().toString(36).substr(2, 9);
                 var name = selector.find("#palleon-save-img-name").val();
                 try {
+                    console.log("Save Json Key ::: ", key)
+                    console.log("Save Json Template ::: ", template)
+                    console.log("Save Json Name ::: ", name)
                     db.collection('assets').add({
                         key: key,
                         src: template,
