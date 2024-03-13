@@ -451,7 +451,9 @@ ul.palleon-dropdown li a .material-icons {
 .palleon-content-bar {
     position: fixed;
     display: flex;
-    bottom: 20px;
+    /* bottom: 20px; */
+    /* top: 120px; */
+    top: 70px;
     right: 220px;
     padding: 0 25px;
     border-radius: 100px;
@@ -3227,11 +3229,16 @@ a.pixabay-url .material-icons {
     .palleon-content-bar,
     body.layers-closed .palleon-content-bar {
         right: 0px;
-        bottom: 0px;
+        /* bottom: 0px; */
         border-radius: 0;
         padding-left: 15px;
         border-right: none !important;
         border-bottom: none !important;
+    }
+
+    .palleon-content-bar {
+        bottom: initial;
+        top: 70px;
     }
 
     .sp-palette-container {

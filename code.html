@@ -39,6 +39,19 @@
         </div>
         <!-- Top Bar Menu -->
         <div class="palleon-top-bar-menu">
+            <!-- <div class="palleon-content-bar" style="top: 8px; right: 430px;">
+                <div class="palleon-img-size"><span id="palleon-img-width">0</span>px<span
+                        class="material-icons">clear</span><span id="palleon-img-height">0</span>px</div>
+                <button id="palleon-img-drag" class="palleon-btn"><span class="material-icons">pan_tool</span></button>
+                <div id="palleon-img-zoom-counter" class="palleon-counter">
+                    <button id="palleon-img-zoom-out" class="counter-minus palleon-btn"><span
+                            class="material-icons">remove</span></button>
+                    <input id="palleon-img-zoom" class="palleon-form-field numeric-field" type="text" value="100"
+                        autocomplete="off" data-min="10" data-max="200" data-step="5">
+                    <button id="palleon-img-zoom-in" class="counter-plus palleon-btn"><span
+                            class="material-icons">add</span></button>
+                </div>
+            </div> -->
             <!-- History -->
             <div class="palleon-undo">
                 <button id="palleon-undo" type="button" class="palleon-btn-simple tooltip" data-title="Undo"
@@ -628,179 +641,21 @@
             </div>
             <!-- Adjust END -->
 
-            <!-- Frames START -->
-            <!-- Category -->
-            <div id="palleon-frames-category" class="palleon-icon-panel-content">
+            <!-- Frames Category START -->
+            <div id="palleon-frames-category" class="palleon-icon-panel-content category">
                 <div id="palleon-all-frames" class="palleon-tab active">
                     <ul id="palleon-frames-wrap" class="palleon-accordion insert-category">
 
                     </ul>
                 </div>
             </div>
-            <!-- Frames END -->
+            <!-- Frames Category END -->
 
-            <!-- Frames START -->
-            <!-- Sub Category :: Added Dynamically -->
+            <!-- Frames Sub Category START -->
+            <!-- Frames Sub Category END -->
 
-            <!-- Frames END -->
-
-            <!-- Frames START -- Child Category -->
-            <!-- Child Category :: Added Dynamically -->
-
-            <!-- Frames END -->
-
-
-            <!-- Frames START --- Old Category -->
-            <!-- <div id="palleon-frames-category" class="palleon-icon-panel-content">
-                <div class="palleon-tabs">
-                    <div id="palleon-all-frames" class="palleon-tab active">
-                        <ul id="palleon-frames-wrap" class="palleon-accordion">
-                            <li data-keyword="search-keyword"><a href="#">Category Name One
-                                    <span class="material-icons arrow">keyboard_arrow_down</span></a>
-                                <div>
-                                    <div id="palleon-frames-grid-watercolor" class="palleon-frames-grid paginated"
-                                        data-perpage="4" style="display: flex; gap: 10px;">
-                                        <button id="palleon-btn-frames" type="button" class="palleon-icon-menu-btn"
-                                            data-target="#palleon-frames-sub-category">
-                                            <span class="palleon-icon-menu-title">Sub Category Icons One</span>
-                                        </button>
-
-                                        <button id="palleon-btn-frames" type="button" class="palleon-icon-menu-btn"
-                                            data-target="#palleon-frames-sub-category">
-                                            <span class="palleon-icon-menu-title">Sub Category Icons Two</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <li data-keyword="search-keyword"><a href="#">Category Name Two
-                                    <span class="material-icons arrow">keyboard_arrow_down</span></a>
-                                <div>
-                                    <div id="palleon-frames-grid-watercolor" class="palleon-frames-grid paginated"
-                                        data-perpage="4" style="display: flex; gap: 10px;">
-                                        <button id="palleon-btn-frames" type="button" class="palleon-icon-menu-btn"
-                                            data-target="#palleon-frames-sub-category">
-                                            <span class="palleon-icon-menu-title">Sub Category Icons Two</span>
-                                        </button>
-
-                                        <button id="palleon-btn-frames" type="button" class="palleon-icon-menu-btn"
-                                            data-target="#palleon-frames-sub-category">
-                                            <span class="palleon-icon-menu-title">Sub Category Icons Two</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div> -->
-            <!-- Frames END -->
-
-            <!-- Frames START -- More Sorted -->
-            <!-- <div id="palleon-frames" class="palleon-icon-panel-content">
-                <div class="palleon-tabs">
-                    <div id="palleon-all-frames" class="palleon-tab active">
-                        <ul id="palleon-frames-wrap" class="palleon-accordion">
-                            <li>
-                                <a><span class="material-icons my-favorites-star">star</span>My Favorites<span
-                                        id="frames-favorites-count" class="data-count">0</span><span
-                                        class="material-icons arrow">keyboard_arrow_down</span></a>
-                                <div id="palleon-frames-favorites" class="palleon-frames-grid"></div>
-                            </li>
-
-                            <li data-keyword="cute"><a href="#">Cute<span class="data-count">7</span><span
-                                        class="material-icons arrow">keyboard_arrow_down</span></a>
-                                <div>
-                                    <div id="palleon-frames-grid-cute" class="palleon-frames-grid paginated"
-                                        data-perpage="4">
-
-                                    </div>
-                                </div>
-                            </li>
-                            <li data-keyword="watercolor"><a href="#">Watercolor<span class="data-count">3</span><span
-                                        class="material-icons arrow">keyboard_arrow_down</span></a>
-                                <div>
-                                    <div id="palleon-frames-grid-watercolor" class="palleon-frames-grid paginated"
-                                        data-perpage="4">
-                                        <div class="palleon-frame" data-elsource="files/frames/watercolor/1.svg">
-                                            <div class="palleon-img-wrap">
-                                                <div class="palleon-img-loader"></div><img class="lazy"
-                                                    data-src="files/frames/watercolor/1.jpg" />
-                                            </div>
-                                            <div class="frame-favorite">
-                                                <button type="button" class="palleon-btn-simple star "
-                                                    data-frameid="files/frames/watercolor/1"><span
-                                                        class="material-icons">star_border</span></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div id="palleon-noframes" class="notice notice-warning">Nothing found.</div>
-            </div> -->
-            <!-- Frames END -->
-
-            <!-- Frames START -->
-            <!-- <div id="palleon-frames" class="palleon-icon-panel-content">
-                <div class="palleon-tabs">
-                    Frames Menu
-                    <ul class="palleon-tabs-menu">
-                        <li class="active" data-target="#palleon-all-frames">All</li>
-                        <li data-target="#palleon-frame-options">Settings</li>
-                    </ul>
-                    All Frames
-                    <div id="palleon-all-frames" class="palleon-tab active">
-                        <div class="palleon-search-wrap">
-                            <input id="palleon-frame-search" type="search" class="palleon-form-field"
-                                placeholder="Search Category..." autocomplete="off" />
-                            <span id="palleon-frame-search-icon" class="material-icons">search</span>
-                        </div>
-                        <ul id="palleon-frames-wrap" class="palleon-accordion">
-                            <li>
-                                <a><span class="material-icons my-favorites-star">star</span>My Favorites<span
-                                        id="frames-favorites-count" class="data-count">0</span><span
-                                        class="material-icons arrow">keyboard_arrow_down</span></a>
-                                <div id="palleon-frames-favorites" class="palleon-frames-grid"></div>
-                            </li>
-
-                            <li data-keyword="cute"><a href="#">Cute<span class="data-count">7</span><span
-                                        class="material-icons arrow">keyboard_arrow_down</span></a>
-                                <div>
-                                    <div id="palleon-frames-grid-cute" class="palleon-frames-grid paginated"
-                                        data-perpage="4">
-
-                                    </div>
-                                </div>
-                            </li>
-                            <li data-keyword="watercolor"><a href="#">Watercolor<span class="data-count">3</span><span
-                                        class="material-icons arrow">keyboard_arrow_down</span></a>
-                                <div>
-                                    <div id="palleon-frames-grid-watercolor" class="palleon-frames-grid paginated"
-                                        data-perpage="4">
-                                        <div class="palleon-frame" data-elsource="files/frames/watercolor/1.svg">
-                                            <div class="palleon-img-wrap">
-                                                <div class="palleon-img-loader"></div><img class="lazy"
-                                                    data-src="files/frames/watercolor/1.jpg" />
-                                            </div>
-                                            <div class="frame-favorite">
-                                                <button type="button" class="palleon-btn-simple star "
-                                                    data-frameid="files/frames/watercolor/1"><span
-                                                        class="material-icons">star_border</span></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    Frames Options
-                </div>
-                <div id="palleon-noframes" class="notice notice-warning">Nothing found.</div>
-            </div> -->
-            <!-- Frames END -->
+            <!-- Frames Child Category START  -->
+            <!-- Frames Child Category END  -->
 
             <!-- Settings START -->
             <div id="palleon-settings" class="palleon-icon-panel-content panel-hide">
@@ -2523,7 +2378,7 @@
     <!-- <script src="js/unminified/palleon-new.js"></script> -->
     <script src="js/unminified/palleon-code.js"></script>
     <script src="js/custom.js"></script>
-    
+
     <!-- <script src="js/unminified/script-frame.js"></script> -->
     <!-- <script src="js/unminified/script-frame-yesterday-jquery.js"></script> -->
 

@@ -7307,28 +7307,21 @@
                 console.log("Category Data ::: ", data?.result)
                 $.each(data?.result, function (index, value) {
                     // console.log("Category Name ::: ", value?.categoryName)
-                    //! Create a new list item element for Category
-                    var listItem = $('<li>').attr({ "data-keyword": "search-keyword", "data-target": '#' + value?.categoryName });
-                    //! Create the anchor element
-                    var anchor = $('<a>').attr("href", "#").text(value?.categoryName);
+                    // TODO : Targetting Category Container's UL
+                    let containerUL = $("#palleon-frames-category .insert-category");
+                    //! Create New List Item Element For Category Container's UL
+                    let listItemContainer = $('<li>').attr({ "data-keyword": "search-keyword", "data-target": '#' + value?.categoryName });
+                    let anchorContainer = $('<a>').attr("href", "#").text(value?.categoryName); //* Create The Anchor Element
 
-                    //! Add click event handler to the List Element
-                    listItem.on('click', function (e) {
+                    //! Add Click Event Handler To The List Element Of Category Container's UL
+                    listItemContainer.on('click', function (e) {
                         console.log("Category Name Clicked:", value?.categoryName);
-                        listItem.addClass('opened active');
+                        listItemContainer.addClass('opened active');
                         $('#palleon-frames-category').addClass('panel-hide');
                         $('#' + value?.categoryName).removeClass('panel-hide');
 
                         if (value?._id) {
                             const data = { _id: value?._id };
-                            const options = {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(data)
-                            };
-
-                            var subContainer = $('#' + value?.categoryName + ' .insert-sub-category');
-
                             $.ajax({
                                 url: 'http://192.168.29.156:5000/api/user/adminSubcategories',
                                 type: 'POST',
@@ -7338,37 +7331,36 @@
                                 console.log("Sub Category Data ::: ", data?.result);
 
                                 $.each(data?.result, function (index, category) {
-                                    //! Create a new list item element for Sub-Category
-                                    var innerListItem = $('<li>').attr("data-keyword", "search-keyword").attr("data-target", '#' + category?.subCategoryName);
-                                    var innerAnchor = $('<a>').attr("href", "#").text(category?.subCategoryName);
+                                    // TODO : Targetting Sub-Category Container's UL
+                                    let subContainerUL = $('#' + value?.categoryName + ' .insert-sub-category');
+                                    //! Create New List Item Element For Sub-Category Container's UL
+                                    let listItemSubContainer = $('<li>').attr("data-keyword", "search-keyword").attr("data-target", '#' + category?.subCategoryName);
+                                    let anchorSubContainer = $('<a>').attr("href", "#").text(category?.subCategoryName); //* Create The Anchor Element
 
                                     //! Add click event handler to the Inner List Element
-                                    innerListItem.on('click', function () {
+                                    listItemSubContainer.on('click', function () {
                                         console.log("Sub Category Name Clicked ::: ", category?.subCategoryName);
-                                        innerListItem.addClass('opened active');
+                                        listItemSubContainer.addClass('opened active');
                                         $('#' + value?.categoryName).addClass('panel-hide');
                                         $('#' + category?.subCategoryName).removeClass('panel-hide');
 
                                         if (category?._id) {
-                                            const childData = { _id: category?._id };
-
-
                                             $.ajax({
                                                 url: 'http://192.168.29.156:5000/api/user/adminChildCategories',
                                                 type: 'POST',
                                                 contentType: 'application/json',
-                                                data: JSON.stringify(childData)
+                                                data: JSON.stringify({ _id: category?._id })
                                             }).done(function (resData) {
                                                 console.log("Child Response Data ::: ", resData);
                                                 $.each(resData?.result, function (index, childValue) {
-                                                    var childContainer = $('#' + category?.subCategoryName + ' .insert-child-category');
-
-                                                    //! Dynamic Start : Create a new list item element for Sub-Category
-                                                    let liElement = $('<li>').attr('data-keyword', childValue?.childCategoryName);
-                                                    let aElement = $('<a>').attr('href', '#').text(childValue?.childCategoryName);
+                                                    // TODO : Targetting Child-Category Container's UL
+                                                    var childContainerUL = $('#' + category?.subCategoryName + ' .insert-child-category');
+                                                    //! Dynamic Start :  Create New List Item Element For Child-Category Container's UL
+                                                    let listItemChildContainer = $('<li>').attr('data-keyword', childValue?.childCategoryName);
+                                                    let anchorChildContainer = $('<a>').attr('href', '#').text(childValue?.childCategoryName);
                                                     let spanElement = $('<span>').addClass('material-icons arrow').text('keyboard_arrow_down');
-                                                    aElement.append(spanElement);
-                                                    liElement.append(aElement);
+                                                    anchorChildContainer.append(spanElement);
+                                                    listItemChildContainer.append(anchorChildContainer);
 
                                                     let outerDivElement = $('<div>');
                                                     let innerDivElement = $('<div>').attr('id', 'palleon-frames-grid-watercolor').addClass('palleon-frames-grid paginated').attr('data-perpage', '4');
@@ -7381,13 +7373,13 @@
                                                     frameDivElement.append(imageWrapperDivElement);
                                                     innerDivElement.append(frameDivElement);
                                                     outerDivElement.append(innerDivElement);
-                                                    liElement.append(outerDivElement);
+                                                    listItemChildContainer.append(outerDivElement);
 
-                                                    childContainer.append(liElement);
+                                                    childContainerUL.append(listItemChildContainer);
 
-                                                    liElement.on('click', function () {
-                                                        console.log("Clicked Image Parent List ::: ", liElement);
-                                                        liElement.addClass('opened');
+                                                    listItemChildContainer.on('click', function () {
+                                                        console.log("Clicked Image Parent List ::: ", listItemChildContainer);
+                                                        listItemChildContainer.addClass('opened');
                                                         imageWrapperDivElement.css('min-height', 'auto');
                                                         imgElement.addClass('entered loaded').attr('data-ll-status', 'loaded');
                                                         innerDivLoader.remove();
@@ -7396,7 +7388,6 @@
                                                     console.log("Svg Div", frameDivElement)
 
                                                     /* Add frame */
-                                                    // selector.find('.palleon-frames-grid').on('click', '.palleon-frame img', function () {
                                                     innerDivElement.on('click', '.palleon-frame img', function () {
                                                         selector.find('#palleon-canvas-loader').css('display', 'flex');
                                                         var frame = $(this).parent().parent();
@@ -7431,23 +7422,23 @@
                                         }
                                     });
 
-                                    innerListItem.append(innerAnchor);
-                                    var existingListItem = subContainer.find('li[data-keyword="search-keyword"][data-target="#' + category?.subCategoryName + '"]');
-                                    if (existingListItem.length) {
-                                        existingListItem.remove();
+                                    listItemSubContainer.append(anchorSubContainer);
+                                    var existingListItemSubContainer = subContainerUL.find('li[data-keyword="search-keyword"][data-target="#' + category?.subCategoryName + '"]');
+                                    if (existingListItemSubContainer.length) {
+                                        existingListItemSubContainer.remove();
                                     }
-                                    subContainer.append(innerListItem);
+                                    subContainerUL.append(listItemSubContainer);
 
                                     //! Adding Child Category - Start
-                                    var subCategoryElement = $('#' + category?.subCategoryName);
-
-                                    if (subCategoryElement.length) {
+                                    var subContainer = $('#' + category?.subCategoryName);
+                                    if (subContainer.length) {
                                         // Element already exists, remove it
-                                        subCategoryElement.remove();
+                                        subContainer.remove();
                                     }
 
+                                    // TODO : Creating Child-Category Container For Targetting By The List Of Sub-Category Container 
                                     $('#' + value?.categoryName).after(`
-                                        <div id=${category?.subCategoryName} class="palleon-icon-panel-content child panel-hide">
+                                        <div id=${category?.subCategoryName} class="palleon-icon-panel-content child-category panel-hide">
                                             <div class="palleon-tabs">
                                                 <div id="palleon-all-frames" class="palleon-tab active">
                                                     <ul id="palleon-frames-wrap" class="palleon-accordion insert-child-category">
@@ -7466,15 +7457,12 @@
                         }
                     });
 
+                    listItemContainer.append(anchorContainer);
+                    containerUL.append(listItemContainer);
 
-                    // $('#' + value?.categoryName).remove()
-
-                    listItem.append(anchor);
-                    $("#palleon-frames-category .insert-category").append(listItem);
-
-                    //! Adding Sub Category 
+                    // TODO : Creating Sub-Category Container For Targetting By The List Of Category Container 
                     $('#palleon-frames-category').after(`
-                        <div id=${value?.categoryName} class="palleon-icon-panel-content sub">
+                        <div id=${value?.categoryName} class="palleon-icon-panel-content sub-category">
                             <div id="palleon-all-frames" class="palleon-tab active">
                                 <ul id="palleon-frames-wrap" class="palleon-accordion insert-sub-category">
             
