@@ -3025,7 +3025,10 @@
                     selector.find("#palleon-layers #" + obj[i].id).addClass('active');
                 }
             } else {
+                // let newObjParaChange = { strokeWidth: 1 }
+                // obj = { ...obj[0], ...newObjParaChange };
                 obj = obj[0];
+
                 if (typeof obj !== "undefined" && obj.objectType) {
                     // Textbox
                     if (obj.objectType == 'textbox') {
@@ -3087,8 +3090,10 @@
                             selector.find('#shape-custom-width-wrap').hide();
                         }
                         selector.find('#palleon-shape-settings').show();
+                        // let newObj = { fill: "#fff", strokeWidth: 1 }
+                        // setShapeSettings({ ...obj, ...newObj });
                         setShapeSettings(obj);
-                        console.log("setShapeSettings(obj)", obj)
+                        console.log("setShapeSettings(obj)", obj.fill)
                         if (!selector.find('#palleon-btn-shapes').hasClass('active')) {
                             selector.find('#palleon-btn-shapes').trigger('click');
                         }
@@ -7300,7 +7305,6 @@
         $.getJSON('http://192.168.29.156:5000/api/user/adminCategories')
             .done(function (data) {
                 console.log("Category Data ::: ", data?.result)
-
                 $.each(data?.result, function (index, value) {
                     // console.log("Category Name ::: ", value?.categoryName)
                     //! Create a new list item element for Category
@@ -7334,8 +7338,6 @@
                                 console.log("Sub Category Data ::: ", data?.result);
 
                                 $.each(data?.result, function (index, category) {
-                                    // subContainer.next().remove()
-                                    // console.log("Removed Sub Container ::: ", subContainer.next().remove())
                                     //! Create a new list item element for Sub-Category
                                     var innerListItem = $('<li>').attr("data-keyword", "search-keyword").attr("data-target", '#' + category?.subCategoryName);
                                     var innerAnchor = $('<a>').attr("href", "#").text(category?.subCategoryName);
@@ -7391,11 +7393,15 @@
                                                         innerDivLoader.remove();
                                                         imgElement.attr('src', "http://192.168.29.156:5000/" + childValue?.childCategoryImage);
                                                     });
+                                                    console.log("Svg Div", frameDivElement)
 
-                                                    selector.find('.palleon-frames-grid').on('click', '.palleon-frame img', function () {
+                                                    /* Add frame */
+                                                    // selector.find('.palleon-frames-grid').on('click', '.palleon-frame img', function () {
+                                                    innerDivElement.on('click', '.palleon-frame img', function () {
                                                         selector.find('#palleon-canvas-loader').css('display', 'flex');
                                                         var frame = $(this).parent().parent();
                                                         var svgUrl = frame.data('elsource');
+                                                        console.log("Svg Url 7406::: ", svgUrl)
                                                         selector.find('.palleon-frames-grid .palleon-frame').removeClass('active');
                                                         frame.addClass('active');
                                                         fabric.loadSVGFromURL(svgUrl, function (objects, options) {
@@ -7426,20 +7432,31 @@
                                     });
 
                                     innerListItem.append(innerAnchor);
+                                    var existingListItem = subContainer.find('li[data-keyword="search-keyword"][data-target="#' + category?.subCategoryName + '"]');
+                                    if (existingListItem.length) {
+                                        existingListItem.remove();
+                                    }
                                     subContainer.append(innerListItem);
 
                                     //! Adding Child Category - Start
+                                    var subCategoryElement = $('#' + category?.subCategoryName);
+
+                                    if (subCategoryElement.length) {
+                                        // Element already exists, remove it
+                                        subCategoryElement.remove();
+                                    }
+
                                     $('#' + value?.categoryName).after(`
-                                <div id=${category?.subCategoryName} class="palleon-icon-panel-content panel-hide">
-                                    <div class="palleon-tabs">
-                                        <div id="palleon-all-frames" class="palleon-tab active">
-                                            <ul id="palleon-frames-wrap" class="palleon-accordion insert-child-category">
-                                            </ul>
+                                        <div id=${category?.subCategoryName} class="palleon-icon-panel-content child panel-hide">
+                                            <div class="palleon-tabs">
+                                                <div id="palleon-all-frames" class="palleon-tab active">
+                                                    <ul id="palleon-frames-wrap" class="palleon-accordion insert-child-category">
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div id="palleon-noframes" class="notice notice-warning">Nothing found.</div>
                                         </div>
-                                    </div>
-                                    <div id="palleon-noframes" class="notice notice-warning">Nothing found.</div>
-                                </div>
-                            `);
+                                    `);
                                     //! Adding Child Category - End
                                 });
                             }).fail(function (error) {
@@ -7457,20 +7474,18 @@
 
                     //! Adding Sub Category 
                     $('#palleon-frames-category').after(`
-                <div id=${value?.categoryName} class="palleon-icon-panel-content">
-                    <div id="palleon-all-frames" class="palleon-tab active">
-                        <ul id="palleon-frames-wrap" class="palleon-accordion insert-sub-category">
-    
-                        </ul>
-                    </div>
-                </div>
-            `);
-
+                        <div id=${value?.categoryName} class="palleon-icon-panel-content sub">
+                            <div id="palleon-all-frames" class="palleon-tab active">
+                                <ul id="palleon-frames-wrap" class="palleon-accordion insert-sub-category">
+            
+                                </ul>
+                            </div>
+                        </div>
+                    `);
                 });
             })
             .fail(function (error) {
                 console.error('Error fetching data:', error);
             });
     };
-
 })(jQuery);
