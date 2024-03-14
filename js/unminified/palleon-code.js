@@ -5266,8 +5266,8 @@
                     svg.set('objectType', 'customShape');
                     svg.set('gradientFill', 'none');
                     svg.set('stroke', '#000');
-                    svg.set('strokeWidth', 0);
-                    svg.set('fill', '#fff');
+                    svg.set('strokeWidth', 1);
+                    svg.set('fill', '');
                     canvas.add(svg);
                     if (print_a) {
                         svg.scaleToWidth((print_a.width * 0.5) * canvas.getZoom());
@@ -5292,9 +5292,9 @@
                 if (val == 'circle') {
                     shape = new fabric.Circle({
                         radius: 50,
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'circle',
                         width: 100,
                         height: 100,
@@ -5315,9 +5315,9 @@
                     shape = new fabric.Ellipse({
                         rx: 75,
                         ry: 50,
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'ellipse',
                         width: 100,
                         height: 100,
@@ -5330,9 +5330,9 @@
                 } else if (val == 'square') {
                     shape = new fabric.Rect({
                         radius: 50,
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'square',
                         width: 100,
                         height: 100,
@@ -5352,9 +5352,9 @@
                 } else if (val == 'rectangle') {
                     shape = new fabric.Rect({
                         radius: 50,
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'rectangle',
                         width: 200,
                         height: 150,
@@ -5367,9 +5367,9 @@
                 } else if (val == 'triangle') {
                     shape = new fabric.Triangle({
                         radius: 50,
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'triangle',
                         width: 100,
                         height: 100,
@@ -5382,9 +5382,9 @@
                 } else if (val == 'trapezoid') {
                     polygon = [{ x: -100, y: -50 }, { x: 100, y: -50 }, { x: 150, y: 50 }, { x: -150, y: 50 }];
                     shape = new fabric.Polygon(polygon, {
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'trapezoid',
                         width: 100,
                         height: 100,
@@ -5401,9 +5401,9 @@
                     { x: 88.8, y: 40.4 },
                     { x: 74, y: 86 }];
                     shape = new fabric.Polygon(polygon, {
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'pentagon',
                         width: 100,
                         height: 100,
@@ -5424,9 +5424,9 @@
                     { x: 65.2, y: 87.4 }
                     ];
                     shape = new fabric.Polygon(polygon, {
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'octagon',
                         width: 100,
                         height: 100,
@@ -5444,9 +5444,9 @@
                     { x: 742, y: 262.5 },
                     { x: 742, y: 137.5 }];
                     shape = new fabric.Polygon(polygon, {
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'emerald',
                         width: 100,
                         height: 100,
@@ -5468,9 +5468,9 @@
                     { x: 231, y: 161 },
                     { x: 321, y: 161 }];
                     shape = new fabric.Polygon(polygon, {
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'star',
                         width: 100,
                         height: 100,
@@ -5486,9 +5486,9 @@
                     { x: 180.556, y: 125 },
                     { x: 125, y: 221.227 }];
                     shape = new fabric.Polygon(polygon, {
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'diamond',
                         width: 100,
                         height: 100,
@@ -5504,9 +5504,9 @@
                     { x: 45, y: 20 },
                     { x: 5, y: 20 }];
                     shape = new fabric.Polygon(polygon, {
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'parallelogram',
                         width: 100,
                         height: 100,
