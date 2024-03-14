@@ -1221,6 +1221,9 @@
                 var key = Math.random().toString(36).substr(2, 9);
                 var name = selector.find("#palleon-save-img-name").val();
                 try {
+                    console.log("Save Json Key ::: ", key)
+                    console.log("Save Json Template ::: ", template)
+                    console.log("Save Json Name ::: ", name)
                     db.collection('assets').add({
                         key: key,
                         src: template,
@@ -3018,13 +3021,17 @@
 
         /* Layer Toggle */
         function layerToggle(obj) {
+            console.log("Layer Toggle Object l-3021 ::: ", obj[0])
             selector.find("#palleon-layers li").removeClass('active');
             if (obj.length >= 2) {
                 for (var i = 0; i < obj.length; i++) {
                     selector.find("#palleon-layers #" + obj[i].id).addClass('active');
                 }
             } else {
+                // let newObjParaChange = { strokeWidth: 1 }
+                // obj = { ...obj[0], ...newObjParaChange };
                 obj = obj[0];
+
                 if (typeof obj !== "undefined" && obj.objectType) {
                     // Textbox
                     if (obj.objectType == 'textbox') {
@@ -3086,7 +3093,10 @@
                             selector.find('#shape-custom-width-wrap').hide();
                         }
                         selector.find('#palleon-shape-settings').show();
+                        // let newObj = { fill: "#fff", strokeWidth: 1 }
+                        // setShapeSettings({ ...obj, ...newObj });
                         setShapeSettings(obj);
+                        console.log("setShapeSettings(obj)", obj.fill)
                         if (!selector.find('#palleon-btn-shapes').hasClass('active')) {
                             selector.find('#palleon-btn-shapes').trigger('click');
                         }
@@ -5131,11 +5141,13 @@
 
         /* Set Shape Settings */
         function setShapeSettings(shape) {
+            console.log("setShapeSettings ::: ", shape)
             selector.find('#palleon-shape-settings-info').hide();
             selector.find('#shape-outline-width').val(shape.strokeWidth);
             if (shape.gradientFill == 'none' || shape.gradientFill == '' || shape.gradientFill === undefined) {
                 selector.find('#palleon-shape-gradient').val('none');
                 selector.find('#palleon-shape-color').spectrum("set", shape.fill);
+                // selector.find('#palleon-shape-color').spectrum("set", '#000');
             } else if (shape.gradientFill == 'vertical') {
                 selector.find('#palleon-shape-gradient').val('vertical');
             } else if (shape.gradientFill == 'horizontal') {
@@ -6042,12 +6054,16 @@
             if (obj._objects) {
                 var colors = [];
                 var output = '';
+                console.log("Obj._objects", obj?._objects)
                 $.each(obj._objects, function (index, val) {
+                    console.log("Val ::: ", val)
                     if (colors.indexOf(val.get('fill')) === -1) {
                         colors.push(val.get('fill'));
                     }
                 });
+                console.log("Color Array ::: ", colors)
                 $.each(colors, function (index, color) {
+                    console.log("Color ::: ", color)
                     if (typeof color === 'string' || color instanceof String) {
                         var count = index + 1;
                         output += '<div class="palleon-control-wrap control-text-color"><label class="palleon-control-label">' + palleonParams.fillColor + ' ' + count + '</label><div class="palleon-control"><input id="customsvg-color-' + count + '" type="text" data-color="' + color + '" class="customsvg-color palleon-colorpicker disallow-empty" autocomplete="off" value="' + color + '" /></div></div>';
@@ -7292,45 +7308,23 @@
         $.getJSON('http://192.168.29.156:5000/api/user/adminCategories')
             .done(function (data) {
                 console.log("Category Data ::: ", data?.result)
-
                 $.each(data?.result, function (index, value) {
                     // console.log("Category Name ::: ", value?.categoryName)
-                    //! Create a new list item element for Category
-                    var listItem = $('<li>').attr({ "data-keyword": "search-keyword", "data-target": '#' + value?.categoryName });
-                    //! Create the anchor element
-                    var anchor = $('<a>').attr("href", "#").text(value?.categoryName);
+                    // TODO : Targetting Category Container's UL
+                    let containerUL = $("#palleon-frames-category .insert-category");
+                    //! Create New List Item Element For Category Container's UL
+                    let listItemContainer = $('<li>').attr({ "data-keyword": "search-keyword", "data-target": '#' + value?.categoryName });
+                    let anchorContainer = $('<a>').attr("href", "#").text(value?.categoryName); //* Create The Anchor Element
 
-                    //! Add click event handler to the List Element
-                    listItem.on('click', function (e) {
+                    //! Add Click Event Handler To The List Element Of Category Container's UL
+                    listItemContainer.on('click', function (e) {
                         console.log("Category Name Clicked:", value?.categoryName);
-                        listItem.addClass('opened active');
+                        listItemContainer.addClass('opened active');
                         $('#palleon-frames-category').addClass('panel-hide');
                         $('#' + value?.categoryName).removeClass('panel-hide');
 
                         if (value?._id) {
                             const data = { _id: value?._id };
-                            const options = {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(data)
-                            };
-
-                            var subContainer = $('#' + value?.categoryName + ' .insert-sub-category');
-                            // var subContainerImmParent = $('#' + value?.categoryName + ' #palleon-all-frames');
-                            let ulParent = document.getElementById('palleon-all-frames-sub');
-                            ulParent.innerHTML += `<ul id="palleon-frames-wrap-sub" class="palleon-accordion insert-sub-category"> </ul>
-                            `
-                            let mainUl = document.getElementById('palleon-frames-wrap-sub')
-                            if (mainUl) {
-                                console.log(mainUl)
-                                console.log("some type bhai", typeof (mainUl))
-                            }
-
-                            // if(mainUl.children) {
-                            //     mainUl.remove()
-                            // }
-                            // subContainerImmParent.clear()
-
                             $.ajax({
                                 url: 'http://192.168.29.156:5000/api/user/adminSubcategories',
                                 type: 'POST',
@@ -7338,60 +7332,38 @@
                                 data: JSON.stringify(data)
                             }).done(function (data) {
                                 console.log("Sub Category Data ::: ", data?.result);
-                                if (!(ulParent.children == mainUl)) {
-                                    console.log('hn bhai h')
-                                    ulParent.innerHTML = mainUl;
-                                    if (mainUl) {
-                                        console.log('ban gya h')
-                                        console.log(mainUl)
-                                        console.log("some type bhai", typeof (mainUl))
-                                    }
-                                }
+
                                 $.each(data?.result, function (index, category) {
-                                    // subContainer.next().remove()
-                                    // console.log("Removed Sub Container ::: ", subContainer.next().remove())
-                                    //! Create a new list item element for Sub-Category
-                                    // var innerListItem = $('<li>').attr("data-keyword", "search-keyword").attr("data-target", '#' + category?.subCategoryName);
-                                    // var innerAnchor = $('<a>').attr("href", "#").text(category?.subCategoryName);
-
-                                    // 
-                                    let innerListItem = document.createElement("li");
-                                    innerListItem.setAttribute("data-keyword", "search-keyword");
-                                    // innerListItem.classList.add("palleon-icon-menu-btn");
-                                    listItem.setAttribute("data-target", '#' + category?.subCategoryName);
-
-                                    // Create the anchor element
-                                    let innerAnchor = document.createElement("a");
-                                    innerAnchor.setAttribute("href", "#");
-                                    innerAnchor.textContent = category?.subCategoryName;
+                                    // TODO : Targetting Sub-Category Container's UL
+                                    let subContainerUL = $('#' + value?.categoryName + ' .insert-sub-category');
+                                    //! Create New List Item Element For Sub-Category Container's UL
+                                    let listItemSubContainer = $('<li>').attr("data-keyword", "search-keyword").attr("data-target", '#' + category?.subCategoryName);
+                                    let anchorSubContainer = $('<a>').attr("href", "#").text(category?.subCategoryName); //* Create The Anchor Element
 
                                     //! Add click event handler to the Inner List Element
-                                    innerListItem.on('click', function () {
+                                    listItemSubContainer.on('click', function () {
                                         console.log("Sub Category Name Clicked ::: ", category?.subCategoryName);
-                                        innerListItem.addClass('opened active');
+                                        listItemSubContainer.addClass('opened active');
                                         $('#' + value?.categoryName).addClass('panel-hide');
                                         $('#' + category?.subCategoryName).removeClass('panel-hide');
 
                                         if (category?._id) {
-                                            const childData = { _id: category?._id };
-
-
                                             $.ajax({
                                                 url: 'http://192.168.29.156:5000/api/user/adminChildCategories',
                                                 type: 'POST',
                                                 contentType: 'application/json',
-                                                data: JSON.stringify(childData)
+                                                data: JSON.stringify({ _id: category?._id })
                                             }).done(function (resData) {
                                                 console.log("Child Response Data ::: ", resData);
                                                 $.each(resData?.result, function (index, childValue) {
-                                                    var childContainer = $('#' + category?.subCategoryName + ' .insert-child-category');
-
-                                                    //! Dynamic Start : Create a new list item element for Sub-Category
-                                                    let liElement = $('<li>').attr('data-keyword', childValue?.childCategoryName);
-                                                    let aElement = $('<a>').attr('href', '#').text(childValue?.childCategoryName);
+                                                    // TODO : Targetting Child-Category Container's UL
+                                                    var childContainerUL = $('#' + category?.subCategoryName + ' .insert-child-category');
+                                                    //! Dynamic Start :  Create New List Item Element For Child-Category Container's UL
+                                                    let listItemChildContainer = $('<li>').attr('data-keyword', childValue?.childCategoryName);
+                                                    let anchorChildContainer = $('<a>').attr('href', '#').text(childValue?.childCategoryName);
                                                     let spanElement = $('<span>').addClass('material-icons arrow').text('keyboard_arrow_down');
-                                                    aElement.append(spanElement);
-                                                    liElement.append(aElement);
+                                                    anchorChildContainer.append(spanElement);
+                                                    listItemChildContainer.append(anchorChildContainer);
 
                                                     let outerDivElement = $('<div>');
                                                     let innerDivElement = $('<div>').attr('id', 'palleon-frames-grid-watercolor').addClass('palleon-frames-grid paginated').attr('data-perpage', '4');
@@ -7404,23 +7376,26 @@
                                                     frameDivElement.append(imageWrapperDivElement);
                                                     innerDivElement.append(frameDivElement);
                                                     outerDivElement.append(innerDivElement);
-                                                    liElement.append(outerDivElement);
+                                                    listItemChildContainer.append(outerDivElement);
 
-                                                    childContainer.append(liElement);
+                                                    childContainerUL.append(listItemChildContainer);
 
-                                                    liElement.on('click', function () {
-                                                        console.log("Clicked Image Parent List ::: ", liElement);
-                                                        liElement.addClass('opened');
+                                                    listItemChildContainer.on('click', function () {
+                                                        console.log("Clicked Image Parent List ::: ", listItemChildContainer);
+                                                        listItemChildContainer.addClass('opened');
                                                         imageWrapperDivElement.css('min-height', 'auto');
                                                         imgElement.addClass('entered loaded').attr('data-ll-status', 'loaded');
                                                         innerDivLoader.remove();
                                                         imgElement.attr('src', "http://192.168.29.156:5000/" + childValue?.childCategoryImage);
                                                     });
+                                                    console.log("Svg Div", frameDivElement)
 
-                                                    selector.find('.palleon-frames-grid').on('click', '.palleon-frame img', function () {
+                                                    /* Add frame */
+                                                    innerDivElement.on('click', '.palleon-frame img', function () {
                                                         selector.find('#palleon-canvas-loader').css('display', 'flex');
                                                         var frame = $(this).parent().parent();
                                                         var svgUrl = frame.data('elsource');
+                                                        console.log("Svg Url 7406::: ", svgUrl)
                                                         selector.find('.palleon-frames-grid .palleon-frame').removeClass('active');
                                                         frame.addClass('active');
                                                         fabric.loadSVGFromURL(svgUrl, function (objects, options) {
@@ -7450,14 +7425,23 @@
                                         }
                                     });
 
-                                    innerListItem.append(innerAnchor);
-                                    console.log("Inner List item :: ", innerListItem)
-                                    mainUl.append(innerListItem);
-                                    console.log("Main UL :: ", mainUl)
+                                    listItemSubContainer.append(anchorSubContainer);
+                                    var existingListItemSubContainer = subContainerUL.find('li[data-keyword="search-keyword"][data-target="#' + category?.subCategoryName + '"]');
+                                    if (existingListItemSubContainer.length) {
+                                        existingListItemSubContainer.remove();
+                                    }
+                                    subContainerUL.append(listItemSubContainer);
 
                                     //! Adding Child Category - Start
+                                    var subContainer = $('#' + category?.subCategoryName);
+                                    if (subContainer.length) {
+                                        // Element already exists, remove it
+                                        subContainer.remove();
+                                    }
+
+                                    // TODO : Creating Child-Category Container For Targetting By The List Of Sub-Category Container 
                                     $('#' + value?.categoryName).after(`
-                                        <div id=${category?.subCategoryName} class="palleon-icon-panel-content panel-hide">
+                                        <div id=${category?.subCategoryName} class="palleon-icon-panel-content child-category panel-hide">
                                             <div class="palleon-tabs">
                                                 <div id="palleon-all-frames" class="palleon-tab active">
                                                     <ul id="palleon-frames-wrap" class="palleon-accordion insert-child-category">
@@ -7476,27 +7460,23 @@
                         }
                     });
 
+                    listItemContainer.append(anchorContainer);
+                    containerUL.append(listItemContainer);
 
-                    // $('#' + value?.categoryName).remove()
-
-                    listItem.append(anchor);
-                    $("#palleon-frames-category .insert-category").append(listItem);
-
-                    //! Adding Sub Category 
+                    // TODO : Creating Sub-Category Container For Targetting By The List Of Category Container 
                     $('#palleon-frames-category').after(`
-                        <div id=${value?.categoryName} class="palleon-icon-panel-content">
-                            <div id="palleon-all-frames-sub" class="palleon-tab active">
-                              
+                        <div id=${value?.categoryName} class="palleon-icon-panel-content sub-category">
+                            <div id="palleon-all-frames" class="palleon-tab active">
+                                <ul id="palleon-frames-wrap" class="palleon-accordion insert-sub-category">
+            
+                                </ul>
                             </div>
                         </div>
                     `);
-                    // <ul id="palleon-frames-wrap-sub" class="palleon-accordion insert-sub-category"> </ul>
-
                 });
             })
             .fail(function (error) {
                 console.error('Error fetching data:', error);
             });
     };
-
 })(jQuery);
