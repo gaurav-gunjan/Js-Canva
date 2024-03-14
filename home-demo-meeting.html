@@ -128,7 +128,7 @@
             <span class="palleon-icon-menu-title">Apps</span>
         </button> -->
         <button id="palleon-btn-draw" type="button" class="palleon-icon-menu-btn" data-target="#palleon-draw">
-            <span class="material-icons">brush</span><span class="palleon-icon-menu-title">Brushes</span>
+            <span class="material-icons">brush</span><span class="palleon-icon-menu-title">Draw</span>
         </button>
         <!-- <button id="palleon-btn-settings" type="button" class="palleon-icon-menu-btn stick-to-bottom"
             data-target="#palleon-settings">
@@ -1651,7 +1651,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="shape-fill-color" class="palleon-control-wrap">
+                            <!-- <div id="shape-fill-color" class="palleon-control-wrap">
                                 <label class="palleon-control-label">
                                     Fill Color
                                 </label>
@@ -1659,7 +1659,7 @@
                                     <input id="palleon-shape-color" type="text" class="palleon-colorpicker allow-empty"
                                         autocomplete="off" value="#fff" />
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="palleon-control-wrap">
                                 <label class="palleon-control-label">
                                     Outline Size
@@ -9557,13 +9557,21 @@
                         <label class="palleon-control-label">Brush Type</label>
                         <div class="palleon-control">
                             <select id="palleon-brush-select" class="palleon-select" autocomplete="off">
+                                <option value="line" selected>Line</option>
+                                <option value="arrow" selected>Arrow</option>
+                                <!-- <option value="circle" selected>Circle</option> -->
                                 <option value="pencil" selected>Pencil</option>
                                 <option value="circle">Dotted</option>
+
+                                <!-- <option value="dash-arrow" selected>Dash-Arrow</option>
+                                <option value="dash-line" selected>Dash-Line</option>
+                                <option value="circle" selected>Circle</option> -->
+
                                 <!-- <option value="spray">Spray</option>
                                 <option value="hline">H-line Pattern</option>
                                 <option value="vline">V-line Pattern</option>
-                                <option value="square">Square Pattern</option>
-                                <option value="erase">Erase BG Image</option> -->
+                                <option value="square">Square Pattern</option> -->
+                                <!-- <option value="erase">Erase BG Image</option> -->
                             </select>
                         </div>
                     </div>
@@ -11353,6 +11361,7 @@
     <script src="js/unminified/jquery.js"></script>
     <script src="js/unminified/jquery-ui.js"></script>
     <script src="js/unminified/fabric.js"></script>
+    <script src="js/unminified/CustomClassDraw.js"></script>
     <script src="js/plugins.min.js"></script>
     <!-- <script src="js/unminified/palleon.js"></script> -->
     <script src="js/unminified/palleon-code.js"></script>
