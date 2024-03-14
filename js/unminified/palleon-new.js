@@ -6825,12 +6825,33 @@
         // Brush Type Select
         selector.find('#palleon-brush-select').on('change', function () {
             var val = $(this).val();
+            console.log("Brush Type ::: ", val)
             if (val == 'erase') {
                 $('#palleon-brush-tip').hide();
                 $('#palleon-eraser-tip').show();
             } else {
                 $('#palleon-brush-tip').show();
                 $('#palleon-eraser-tip').hide();
+            }
+            if (val == 'line') {
+                var lineBrush = canvas.getBrush('StraightLine');
+                canvas.freeDrawingBrush = lineBrush;
+            }
+            if (val == 'dash-line') {
+                var lineBrush = canvas.getBrush('DashedLine');
+                canvas.freeDrawingBrush = lineBrush;
+            }
+            if (val == 'arrow') {
+                var arrowBrush = canvas.getBrush('Arrow');
+                canvas.freeDrawingBrush = arrowBrush;
+            }
+            if (val == 'dash-arrow') {
+                var arrowBrush = canvas.getBrush('DashedArrow');
+                canvas.freeDrawingBrush = arrowBrush;
+            }
+            if (val == 'circle') {
+                var arrowBrush = canvas.getBrush('Circle');
+                canvas.freeDrawingBrush = arrowBrush;
             }
             if (val == 'pencil') {
                 var pencilBrush = new fabric.PencilBrush(canvas);

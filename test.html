@@ -770,7 +770,7 @@
                     <!-- Canvas Image -->
                     <div id="palleon-canvas-img-wrap">
                         <img id="palleon-canvas-img" src="assets/placeholder-big.jpg" data-filename=""
-                            data-template="" />
+                            data-template="" style="height: 100%;"/>
                         <!-- 
                             Don't remove img element! To open the editor with a default image, you can update it like the following; 
                             <img id="palleon-canvas-img" src="assets/placeholder-big.jpg" data-filename="placeholder" data-template="" />
@@ -2424,10 +2424,15 @@
 
     <script>
         var canvas = document.getElementById('palleon-canvas');
-        console.log("Cavas ::: ", canvas)
-        console.log("Cavas Client Width ::: ", canvas?.clientWidth)
-        console.log("Cavas Width ::: ", canvas.width)
-        console.log("Cavas Height ::: ", canvas.height)
+        console.log("Canvas ::: ", canvas)
+        console.log("Canvas Client Width ::: ", canvas?.clientWidth)
+        console.log("Canvas Width ::: ", canvas.width)
+        console.log("Canvas Height ::: ", canvas.height)
+
+        var canvasImg = document.getElementById('palleon-canvas-img');
+        console.log("Canvas Image ::: ",canvasImg)
+        console.log("Canvas Image Width ::: ",canvasImg?.clientWidth)
+        console.log("Canvas Image Height ::: ",canvasImg?.clientHeight)
 
 
         var horizontalRuler = document.getElementById('horizontalRuler');
