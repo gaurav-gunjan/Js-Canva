@@ -145,6 +145,11 @@
                                 );
                                 svgs++;
                             } else if (item.type == 'json') {
+                                // localStorage.setItem("tem-json-item", JSON.stringify(item))
+                                // let withoutParseData = localStorage.getItem("tem-json-item")
+                                // let parseData = JSON.parse(withoutParseData)
+                                // console.log("Parse Data :: ", parseData)
+                                // console.log("Item COming ::: ", item)
                                 const jsonblob = new Blob([item.src], { type: "text/plain" });
                                 const jsonurl = URL.createObjectURL(jsonblob);
                                 selector.find('#palleon-my-templates').append(
@@ -664,10 +669,10 @@
 
         /* Create Canvas */
         c = selector.find('#palleon-canvas')[0];
-        canvas = new fabric.Canvas(c);
         // canvas = new fabric.Canvas(c, {
         //     isDrawingMode: true
         // });
+        canvas = new fabric.Canvas(c);
         canvas.backgroundColor = settings.canvasColor;
 
         /* Set File Name */
@@ -1215,7 +1220,7 @@
 
         });
 
-        //! Save Template
+        /* Save Template */
         selector.find('#palleon-json-save').on('click', function () {
             var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
             convertToDataURL(json.backgroundImage.src, function (dataUrl) {
@@ -1224,8 +1229,11 @@
                 var key = Math.random().toString(36).substr(2, 9);
                 var name = selector.find("#palleon-json-save-name").val();
                 try {
-                    // console.log("Save Json Template ::: ", template)
+                    console.log("Save Json Key ::: ", key)
+                    console.log("Save Json Template ::: ", template)
                     console.log("Save Json Name ::: ", name)
+                    // localStorage.setItem('tem-json-data', JSON.stringify(template))
+                    localStorage.setItem('tem-json-data', template)
                     const data = {
                         template,
                         templateName: name,
@@ -1242,6 +1250,15 @@
                     }).fail(function (error) {
                         console.error('Error fetching data:', error);
                     });
+                    // db.collection('assets').add({
+                    //     key: key,
+                    //     src: template,
+                    //     name: name,
+                    //     type: 'json'
+                    // }).then(document => {
+                    //     toastr.success(palleonParams.tempsaved, palleonParams.saved);
+                    //     getAssets();
+                    // });
                 } catch (e) {
                     toastr.error(e.message, palleonParams.error);
                 }
@@ -1250,7 +1267,7 @@
             });
         });
 
-        //! Download Template
+        /* Download Template */
         selector.find('#palleon-json-download').on('click', function () {
             var name = selector.find('#palleon-json-download-name').val();
             var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
@@ -1423,7 +1440,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const templateNameForUpdate = urlParams.get('name');
         const uniqueId = urlParams.get('id');
-        //! Get Template/Canvas Data using Params ID 
+        //! Get Canvas Data using Params ID 
         function getDataFromParams() {
             $.ajax({
                 url: 'http://192.168.1.40:5000/api/user/getTempdata',
@@ -1508,9 +1525,11 @@
         }
 
         let currentUrlWithoutID;
+
         function updateCurrentUrl() {
             currentUrlWithoutID = new URL(window.location.href);
         }
+
         function checkParams() {
             updateCurrentUrl();
             if (currentUrlWithoutID.search === '') {
@@ -1519,7 +1538,10 @@
                 updateCanvasData();
             }
         }
-        setInterval(() => { checkParams() }, 3000)
+
+        setInterval(() => {
+            checkParams()
+        }, 3000);
 
         //! Function To Clear Params 
         function clearQueryParams() {
@@ -2690,6 +2712,10 @@
                 selector.find('.palleon-modal').hide();
             }
         });
+
+        //! Undo & Redo Edit Start
+
+        //! Undo & Redo Edit End 
 
         /* EVENTS */
 

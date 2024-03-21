@@ -130,10 +130,18 @@
         <button id="palleon-btn-draw" type="button" class="palleon-icon-menu-btn" data-target="#palleon-draw">
             <span class="material-icons">brush</span><span class="palleon-icon-menu-title">Draw</span>
         </button>
-        <!-- <button id="palleon-btn-settings" type="button" class="palleon-icon-menu-btn stick-to-bottom"
+        <!-- <button id="palleon-line-click-btn" type="button" class="palleon-icon-menu-btn">
+            <span class="material-icons">wallpaper</span>
+            <span class="new-line">Line</span>
+        </button>
+        <button id="palleon-line-click-btn-off" type="button" class="palleon-icon-menu-btn">
+            <span class="material-icons">wallpaper</span>
+            <span class="new-line">Line Off</span>
+        </button> -->
+        <button id="palleon-btn-settings" type="button" class="palleon-icon-menu-btn stick-to-bottom"
             data-target="#palleon-settings">
             <span class="material-icons">settings</span><span class="palleon-icon-menu-title">Settings</span>
-        </button> -->
+        </button>
     </div>
     <!-- Icon Menu END -->
     <!-- Icon Panel START -->
@@ -1210,6 +1218,13 @@
                                     </g>
                                 </svg>
                             </div>
+                            <div class="palleon-shape" data-id="line" title="Line">
+                                <svg height="200" width="300" xmlns="http://www.w3.org/2000/svg">
+                                    <line x1="0" y1="0" x2="300" y2="200"
+                                        style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" />
+                                </svg>
+                            </div>
+                            <!-- style="stroke:rgb(0,0,0);stroke-width:0" -->
                             <div class="palleon-shape" data-id="rectangle" title="Rectangle"> <svg
                                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                     version="1.1" width="200" height="200" viewBox="0 0 200 200" xml:space="preserve">
@@ -9738,6 +9753,7 @@
                         </div>
                         <!-- Canvas - Don't remove canvas element! -->
                         <canvas id="palleon-canvas"></canvas>
+                        <!-- <button id="fullscreenbtn">Full Screen</button> -->
                     </div>
                     <!-- Zoom & Pan Buttons -->
                     <!-- <div class="palleon-content-bar">
@@ -11348,6 +11364,41 @@
             "select": "Select"
         };
         /* ]]> */
+        const canvas = document.getElementById('palleon-canvas');
+        const fullscreenBtn = document.getElementById('fullscreenbtn');
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                canvas.requestFullscreen().catch(err => {
+                    alert(`Error attempting to enable full-screen mode: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        fullscreenBtn.addEventListener('click', () => {
+            toggleFullScreen();
+        });
+
+        // Event listener for exiting fullscreen using Esc key
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                fullscreenBtn.innerText = 'Full Screen';
+            }
+        });
+
+        // Event listener for exiting fullscreen using Esc key
+        document.addEventListener('keydown', (event) => {
+            if (event.key === "Escape") {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
     </script>
 
     <!-- <script src="js/jquery.min.js"></script>
