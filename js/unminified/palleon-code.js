@@ -12,7 +12,7 @@
 
 (function ($) {
     "use strict";
-    console.log("Palleon")
+    console.log("Palleon Code")
 
     $.fn.palleon = function (options) {
         var selector = $(this);
@@ -1232,7 +1232,7 @@
                         templateKey: key
                     }
                     $.ajax({
-                        url: 'http://192.168.1.40:5000/api/user/add_template',
+                        url: 'http://3.110.173.33:5000/api/user/add_template',
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify(data)
@@ -1426,7 +1426,7 @@
         //! Get Template/Canvas Data using Params ID 
         function getDataFromParams() {
             $.ajax({
-                url: 'http://192.168.1.40:5000/api/user/getTempdata',
+                url: 'http://3.110.173.33:5000/api/user/getTempdata',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ tempServerID: uniqueId })
@@ -1459,7 +1459,7 @@
                         template,
                     }
                     $.ajax({
-                        url: 'http://192.168.1.40:5000/api/user/tempdataUpdate',
+                        url: 'http://3.110.173.33:5000/api/user/tempdataUpdate',
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify(data)
@@ -1489,7 +1489,7 @@
                         template,
                     }
                     $.ajax({
-                        url: 'http://192.168.1.40:5000/api/user/untitleTemp',
+                        url: 'http://3.110.173.33:5000/api/user/untitleTemp',
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify(data)
@@ -7467,7 +7467,7 @@
 
 
         //! Custom Code  
-        $.getJSON('http://192.168.1.40:5000/api/user/adminCategories')
+        $.getJSON('http://3.110.173.33:5000/api/user/adminCategories')
             .done(function (data) {
                 // console.log("Category Data ::: ", data?.result)
                 $.each(data?.result, function (index, value) {
@@ -7488,7 +7488,7 @@
                         if (value?._id) {
                             const data = { _id: value?._id };
                             $.ajax({
-                                url: 'http://192.168.1.40:5000/api/user/adminSubcategories',
+                                url: 'http://3.110.173.33:5000/api/user/adminSubcategories',
                                 type: 'POST',
                                 contentType: 'application/json',
                                 data: JSON.stringify(data)
@@ -7511,7 +7511,7 @@
 
                                         if (category?._id) {
                                             $.ajax({
-                                                url: 'http://192.168.1.40:5000/api/user/adminChildCategories',
+                                                url: 'http://3.110.173.33:5000/api/user/adminChildCategories',
                                                 type: 'POST',
                                                 contentType: 'application/json',
                                                 data: JSON.stringify({ _id: category?._id })
@@ -7529,9 +7529,9 @@
 
                                                     let outerDivElement = $('<div>');
                                                     let innerDivElement = $('<div>').attr('id', 'palleon-frames-grid-watercolor').addClass('palleon-frames-grid paginated').attr('data-perpage', '4');
-                                                    let frameDivElement = $('<div>').addClass('palleon-frame').attr('data-elsource', "http://192.168.1.40:5000/" + childValue?.childCategoryImageSVG);
+                                                    let frameDivElement = $('<div>').addClass('palleon-frame').attr('data-elsource', "http://3.110.173.33:5000/" + childValue?.childCategoryImageSVG);
                                                     let imageWrapperDivElement = $('<div>').addClass('palleon-img-wrap');
-                                                    let imgElement = $('<img>').attr('data-src', "http://192.168.1.40:5000/" + childValue?.childCategoryImage).addClass('lazy');
+                                                    let imgElement = $('<img>').attr('data-src', "http://3.110.173.33:5000/" + childValue?.childCategoryImage).addClass('lazy');
                                                     let innerDivLoader = $('<div>').addClass('palleon-img-loader');
                                                     imageWrapperDivElement.append(innerDivLoader);
                                                     imageWrapperDivElement.append(imgElement);
@@ -7548,7 +7548,7 @@
                                                         imageWrapperDivElement.css('min-height', 'auto');
                                                         imgElement.addClass('entered loaded').attr('data-ll-status', 'loaded');
                                                         innerDivLoader.remove();
-                                                        imgElement.attr('src', "http://192.168.1.40:5000/" + childValue?.childCategoryImage);
+                                                        imgElement.attr('src', "http://3.110.173.33:5000/" + childValue?.childCategoryImage);
                                                     });
                                                     // console.log("Svg Div", frameDivElement)
 
