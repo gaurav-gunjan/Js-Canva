@@ -1480,31 +1480,31 @@
             console.log("Update JSON New API hitted Without ID")
             var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
 
-            // convertToDataURL(json.backgroundImage.src, function (dataUrl) {
-            //     json.backgroundImage.src = dataUrl;
-            //     var template = JSON.stringify(json);
-            //     try {
-            //         // console.log("Save Json Template ::: ", template)
-            //         const data = {
-            //             template,
-            //         }
-            //         $.ajax({
-            //             url: 'http://192.168.1.40:5000/api/user/untitleTemp',
-            //             type: 'POST',
-            //             contentType: 'application/json',
-            //             data: JSON.stringify(data)
-            //         }).done(function (data) {
-            //             console.log("Untitle Template Created");
-            //             // console.log("Untitle Template Created ::: ", data?.result);
-            //         }).fail(function (error) {
-            //             console.error('Error fetching data:', error);
-            //         });
-            //     } catch (e) {
-            //         toastr.error(e.message, palleonParams.error);
-            //     }
+            convertToDataURL(json.backgroundImage.src, function (dataUrl) {
+                json.backgroundImage.src = dataUrl;
+                var template = JSON.stringify(json);
+                try {
+                    // console.log("Save Json Template ::: ", template)
+                    const data = {
+                        template,
+                    }
+                    $.ajax({
+                        url: 'http://192.168.1.40:5000/api/user/untitleTemp',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data)
+                    }).done(function (data) {
+                        console.log("Untitle Template Created");
+                        // console.log("Untitle Template Created ::: ", data?.result);
+                    }).fail(function (error) {
+                        console.error('Error fetching data:', error);
+                    });
+                } catch (e) {
+                    toastr.error(e.message, palleonParams.error);
+                }
 
-            //     selector.find('.palleon-modal').hide();
-            // });
+                selector.find('.palleon-modal').hide();
+            });
         }
 
         let currentUrlWithoutID;
@@ -1519,7 +1519,7 @@
                 updateCanvasData();
             }
         }
-        setInterval(() => { checkParams() }, 3000)
+        setInterval(() => { checkParams() }, 20000)
 
         //! Function To Clear Params 
         function clearQueryParams() {
