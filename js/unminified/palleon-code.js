@@ -1162,6 +1162,8 @@
 
         /* Empty Canvas */
         selector.find('#palleon-canvas-create').on('click', function () {
+            console.log("New Created")
+            clearQueryParams()
             setFileName(new Date().getTime(), '');
             init('canvas');
         });
@@ -1264,6 +1266,41 @@
             });
         });
 
+        //! Save Template : File
+        selector.find('#palleon-json-save-file').on('click', function () {
+            var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
+            convertToDataURL(json.backgroundImage.src, function (dataUrl) {
+                json.backgroundImage.src = dataUrl;
+                var template = JSON.stringify(json);
+                var key = Math.random().toString(36).substr(2, 9);
+                var name = selector.find("#palleon-json-save-name-file").val();
+                try {
+                    // console.log("Save Json Template ::: ", template)
+                    console.log("Save Json Name ::: ", name)
+                    const data = {
+                        template,
+                        templateName: name,
+                        templateKey: key
+                    }
+                    $.ajax({
+                        url: `${base_url}/api/user/add_template`,
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data)
+                    }).done(function (data) {
+                        console.log("Template Data ::: ", data?.result);
+                        toastr.success("Template Saved", "Saved !!!!");
+                    }).fail(function (error) {
+                        console.error('Error fetching data:', error);
+                    });
+                } catch (e) {
+                    toastr.error(e.message, palleonParams.error);
+                }
+
+                selector.find('.palleon-modal').hide();
+            });
+        });
+
         //! Download Template
         selector.find('#palleon-json-download').on('click', function () {
             var name = selector.find('#palleon-json-download-name').val();
@@ -1279,6 +1316,45 @@
                 selector.find('.palleon-modal').hide();
             });
         });
+
+        //! Download Template : File
+        selector.find('#palleon-json-download-file').on('click', function () {
+            var name = selector.find('#palleon-json-download-name-file').val();
+            var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
+            convertToDataURL(json.backgroundImage.src, function (dataUrl) {
+                json.backgroundImage.src = dataUrl;
+                var json2 = JSON.stringify(json);
+                var a = document.createElement("a");
+                var file = new Blob([json2], { type: "text/plain" });
+                a.href = URL.createObjectURL(file);
+                a.download = name + '.json';
+                a.click();
+                selector.find('.palleon-modal').hide();
+            });
+        });
+
+        //! Close Button Start
+        document.getElementById('close-file').addEventListener('click', () => {
+            console.log("Close Clicked")
+            // document.getElementById('palleon-icon-panel').style.display = 'none'
+            closePanel()
+        })
+        // document.getElementById('close-view').addEventListener('click', () => {
+        //     console.log("Close Clicked")
+        //     // document.getElementById('palleon-icon-panel').style.display = 'none'
+        //     closePanel()
+        // })
+        // document.getElementById('close-edit').addEventListener('click', () => {
+        //     console.log("Close Clicked")
+        //     // document.getElementById('palleon-icon-panel').style.display = 'none'
+        //     closePanel()
+        // })
+        // document.getElementById('close-help').addEventListener('click', () => {
+        //     console.log("Close Clicked")
+        //     // document.getElementById('palleon-icon-panel').style.display = 'none'
+        //     closePanel()
+        // })
+        //! Close Button End
 
         /* Load JSON */
         function loadJSON(json) {
@@ -3823,6 +3899,16 @@
 
         /* Rotate Left */
         selector.find('#palleon-rotate-left').on('click', function () {
+            rotateCanvas('left');
+        });
+
+        //! Rotate Right : Edit
+        selector.find('#palleon-rotate-right-edit').on('click', function () {
+            rotateCanvas('right');
+        });
+
+        //! Rotate Left : Edit
+        selector.find('#palleon-rotate-left-edit').on('click', function () {
             rotateCanvas('left');
         });
 

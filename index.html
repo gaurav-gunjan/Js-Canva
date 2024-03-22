@@ -742,32 +742,42 @@
                     <span class="palleon-icon-menu-title">New</span>
                 </div>
 
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Save</div>
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Export</div>
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Share</div>
+                <div id="palleon-save-file" type="button" class="palleon-modal-open" data-target="#modal-save-file"
+                    style="cursor: pointer; margin: 3px 0;">
+                    <span class="palleon-icon-menu-title">Save</span>
+                </div>
+
+                <div id="palleon-export-file" type="button" class="palleon-modal-open" data-target="#modal-export-file"
+                    style="cursor: pointer;">
+                    <span class="palleon-icon-menu-title">Export</span>
+                </div>
+                
+                <!-- <div id="share-canvas-file" class="palleon-icon-menu-title" style="cursor: pointer;">Share</div> -->
                 <div class="palleon-icon-menu-title" style="cursor: pointer;">Publication License</div>
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Close</div>
+                <div id="close-file" class="palleon-icon-menu-title" style="cursor: pointer;">Close</div>
             </div>
             <!--! File Menu End !-->
 
             <!--! Edit Menu Start !-->
             <div id="palleon-edit-menu" class="palleon-icon-panel-content panel-hide"
                 style="display: flex; flex-direction: column; gap: 5px;">
+                <div id="palleon-undo-edit" class="palleon-icon-menu-title" style="cursor: pointer;">Undo</div>
+                <div id="palleon-redo-edit" class="palleon-icon-menu-title" style="cursor: pointer;">Redo</div>
+                <div id="palleon-rotate-right-edit" class="palleon-icon-menu-title" style="cursor: pointer;">Rotate
+                    Right</div>
+                <div id="palleon-rotate-left-edit" class="palleon-icon-menu-title" style="cursor: pointer;">Rotate Left
+                </div>
+                <div id="palleon-flip-horizontal" class="palleon-icon-menu-title" style="cursor: pointer;">Flip
+                    Horizontal</div>
+                <div id="palleon-flip-vertical" class="palleon-icon-menu-title" style="cursor: pointer;">Flip vertical
+                </div>
                 <div class="palleon-icon-menu-title" style="cursor: pointer;">Cut</div>
                 <div class="palleon-icon-menu-title" style="cursor: pointer;">Copy</div>
                 <div class="palleon-icon-menu-title" style="cursor: pointer;">Paste</div>
-                
-                <!-- <div class="palleon-undo-edit">
-                    <button id="palleon-undo-edit" type="button" class="palleon-btn-simple tooltip" data-title="Undo"
-                        autocomplete="off" disabled><span class="material-icons">undo</span></button>
-                </div>
-                <div class="palleon-redo-edit">
-                    <button id="palleon-redo-edit" type="button" class="palleon-btn-simple tooltip" data-title="Redo"
-                        autocomplete="off" disabled><span class="material-icons">redo</span></button>
-                </div> -->
-
-                <div id="palleon-undo-edit" class="palleon-icon-menu-title" style="cursor: pointer;">Undo</div>
-                <div id="palleon-redo-edit" class="palleon-icon-menu-title" style="cursor: pointer;">Redo</div>
+                <div class="palleon-icon-menu-title" style="cursor: pointer;">Canvas Resize</div>
+                <div class="palleon-icon-menu-title" style="cursor: pointer;">Select All</div>
+                <div class="palleon-icon-menu-title" style="cursor: pointer;">Group</div>
+                <div class="palleon-icon-menu-title" style="cursor: pointer;">Ungroup</div>
             </div>
             <!--! Edit Menu End !-->
 
@@ -777,9 +787,11 @@
                 <div class="palleon-icon-menu-title" style="cursor: pointer;">Zoom In</div>
                 <div class="palleon-icon-menu-title" style="cursor: pointer;">Zoom Out</div>
                 <div class="palleon-icon-menu-title" style="cursor: pointer;">Reset</div>
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Share</div>
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Publication License</div>
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Close</div>
+                <div class="palleon-icon-menu-title" style="cursor: pointer;">Gridline</div>
+                <div class="palleon-icon-menu-title" style="cursor: pointer;">Ruler</div>
+                <div class="palleon-icon-menu-title" style="cursor: pointer;">Page Color</div>
+                <div class="palleon-icon-menu-title" style="cursor: pointer;">Alignment</div>
+                <div class="palleon-icon-menu-title" style="cursor: pointer;">Lock</div>
             </div>
             <!--! View Menu End !-->
 
@@ -2359,6 +2371,59 @@
         </div>
     </div>
     <!-- Modal Save END -->
+
+    <!-- Modal Save Edit START -->
+    <div id="modal-save-file" class="palleon-modal">
+        <div class="palleon-modal-close" data-target="#modal-save-file"><span class="material-icons">close</span></div>
+        <div class="palleon-modal-wrap">
+            <div class="palleon-modal-inner">
+                <div class="palleon-tabs">
+                    <div id="modal-tab-save" class="palleon-tab active">
+                        <div id="palleon-save-as-json">
+                            <div class="palleon-block-50">
+                                <div>
+                                    <label>File Name</label>
+                                    <input id="palleon-json-save-name-file" class="palleon-form-field palleon-file-name"
+                                        type="text" value="" autocomplete="off" data-default="">
+                                </div>
+                                <button id="palleon-json-save-file" type="button" class="palleon-btn primary"><span
+                                        class="material-icons">save</span>Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Save Edit END -->
+
+    <!-- Modal Export Edit START -->
+    <div id="modal-export-file" class="palleon-modal">
+        <div class="palleon-modal-close" data-target="#modal-export-file"><span class="material-icons">close</span>
+        </div>
+        <div class="palleon-modal-wrap">
+            <div class="palleon-modal-inner">
+                <div class="palleon-tabs">
+                    <div id="modal-tab-download" class="palleon-tab active">
+                        <div id="palleon-download-as-json">
+                            <div class="palleon-block-50">
+                                <div>
+                                    <label>File Name</label>
+                                    <input id="palleon-json-download-name-file"
+                                        class="palleon-form-field palleon-file-name" type="text" value=""
+                                        autocomplete="off" data-default="">
+                                </div>
+                                <button id="palleon-json-download-file" type="button" class="palleon-btn primary"><span
+                                        class="material-icons">download</span>Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Export Edit END -->
+
     <!-- Modal Media Library START -->
     <div id="modal-media-library" class="palleon-modal">
         <div class="palleon-modal-close" data-target="#modal-media-library"><span class="material-icons">close</span>
