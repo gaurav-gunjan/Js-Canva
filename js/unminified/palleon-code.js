@@ -19,10 +19,11 @@
 
     if (window.location.protocol === 'http:') {
         console.log("window.location.protocol === ", window.location.protocol)
-        base_url = 'http://3.110.173.33:5000'
+        // base_url = 'http://3.110.173.33:5000'
+        base_url = 'https:biovisuals.in'
         console.log('Running HTTP', base_url);
     } else if (window.location.protocol === 'https:') {
-        base_url = 'https://3.110.173.33:5000'
+        base_url = 'https:biovisuals.in'
         console.log('Running HTTPS', base_url);
     } else {
         console.log('Unknown protocol');
@@ -1231,6 +1232,60 @@
 
         });
 
+        //! Share : File
+        document.getElementById('share-canvas-file').addEventListener('click', shareCanvas)
+        function shareCanvas() {
+            console.log("Sharing")
+            var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
+            convertToDataURL(json.backgroundImage.src, function (dataUrl) {
+                json.backgroundImage.src = dataUrl;
+                var template = JSON.stringify(json);
+                var key = Math.random().toString(36).substr(2, 9);
+                var name = selector.find("#palleon-json-save-name").val();
+                try {
+                    console.log("Save Json Name ::: ", name)
+                    const data = {
+                        template,
+                        templateName: "name",
+                    }
+
+                    // // Convert JSON data to a data URI
+                    // const jsonDataUri = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+
+                    // Convert JSON data to Base64
+                    const jsonDataBase64 = btoa(JSON.stringify(data));
+
+                    // Create a data URI with Base64-encoded JSON data
+                    const jsonDataUri = 'data:application/json;base64,' + jsonDataBase64;
+
+                    // Convert JSON data to Blob
+                    const jsonDataBlob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+
+
+                    // Share the data using Web Share API
+                    if (navigator.share) {
+                        const file = new File([jsonDataBlob], 'template.json', { type: 'application/json' });
+
+                        navigator.share({
+                            title: 'Shared Template',
+                            text: 'Check out this template!',
+                            url: [file]
+                        }).then(() => {
+                            console.log('Successfully shared');
+                        }).catch((error) => {
+                            console.error('Share failed:', error);
+                        });
+                    } else {
+                        alert('Web Share API not supported in this browser.');
+                    }
+
+                } catch (e) {
+                    toastr.error(e.message, palleonParams.error);
+                }
+            });
+
+        }
+
         //! Save Template
         selector.find('#palleon-json-save').on('click', function () {
             var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
@@ -1245,7 +1300,8 @@
                     const data = {
                         template,
                         templateName: name,
-                        templateKey: key
+                        templateKey: key,
+                        userName: "ksbmksbm17"
                     }
                     $.ajax({
                         url: `${base_url}/api/user/add_template`,
@@ -1280,7 +1336,8 @@
                     const data = {
                         template,
                         templateName: name,
-                        templateKey: key
+                        templateKey: key,
+                        userName: "ksbmksbm17"
                     }
                     $.ajax({
                         url: `${base_url}/api/user/add_template`,
@@ -1339,21 +1396,6 @@
             // document.getElementById('palleon-icon-panel').style.display = 'none'
             closePanel()
         })
-        // document.getElementById('close-view').addEventListener('click', () => {
-        //     console.log("Close Clicked")
-        //     // document.getElementById('palleon-icon-panel').style.display = 'none'
-        //     closePanel()
-        // })
-        // document.getElementById('close-edit').addEventListener('click', () => {
-        //     console.log("Close Clicked")
-        //     // document.getElementById('palleon-icon-panel').style.display = 'none'
-        //     closePanel()
-        // })
-        // document.getElementById('close-help').addEventListener('click', () => {
-        //     console.log("Close Clicked")
-        //     // document.getElementById('palleon-icon-panel').style.display = 'none'
-        //     closePanel()
-        // })
         //! Close Button End
 
         /* Load JSON */
@@ -1515,6 +1557,7 @@
         const uniqueId = urlParams.get('id');
         //! Get Template/Canvas Data using Params ID 
         function getDataFromParams() {
+            console.log("Data get")
             $.ajax({
                 url: `${base_url}/api/user/getTempdata`,
                 type: 'POST',
@@ -1536,6 +1579,7 @@
 
         //! Auto Save When ID on Params : Auto Update  
         function updateCanvasData() {
+            console.log("Data Update With Id")
             console.log("Update JSON New API hitted With ID")
             var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
             // console.log("Update JSON New With ID ::: ", json)
@@ -1567,6 +1611,7 @@
 
         //! Auto Save When No ID on Params : Auto Create
         function updateCanvasDataWithoutID() {
+            console.log("Data Update Without ID")
             console.log("Update JSON New API hitted Without ID")
             var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
 
