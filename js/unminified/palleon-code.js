@@ -2705,6 +2705,31 @@
             }
         });
 
+        //! Undo-Redo Edit Section Start
+        // Undo
+        selector.find('#palleon-undo-edit').on('click', function () {
+            console.log("Clicked")
+            var target = selector.find('#palleon-history-list li.active').next('li');
+            if (target.length) {
+                target.find('.palleon-btn.primary').trigger('click');
+                selector.find('#palleon-redo-edit').prop('disabled', false);
+            } else {
+                selector.find('#palleon-undo-edit').prop('disabled', true);
+            }
+        });
+
+        // Redo
+        selector.find('#palleon-redo-edit').on('click', function () {
+            var target = selector.find('#palleon-history-list li.active').prev('li');
+            if (target.length) {
+                target.find('.palleon-btn.primary').trigger('click');
+                selector.find('#palleon-undo-edit').prop('disabled', false);
+            } else {
+                selector.find('#palleon-redo-edit').prop('disabled', true);
+            }
+        });
+        //! Undo-Redo Edit Section End 
+
         /* EVENTS */
 
         canvas.on('palleon:history', function (e) {
