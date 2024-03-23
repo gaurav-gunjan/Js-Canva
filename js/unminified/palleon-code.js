@@ -15,13 +15,11 @@
     console.log("Palleon Code")
 
     let base_url;
-    let local_server_url = 'http://192.168.1.40:5000'
 
     if (window.location.protocol === 'http:') {
         console.log("window.location.protocol === ", window.location.protocol)
         // base_url = 'http://3.110.173.33:5000'
         base_url = 'https://biovisuals.in'
-        console.log('Running HTTP', base_url);
     } else if (window.location.protocol === 'https:') {
         base_url = 'https://biovisuals.in'
         console.log('Running HTTPS', base_url);
@@ -313,7 +311,7 @@
         toastr.options.hideEasing = 'linear';
         toastr.options.closeEasing = 'linear';
 
-        // UI Draggable
+        //! UI Draggable
         selector.find("#palleon-canvas-wrap").draggable({ disabled: true });
 
         // Pagination
@@ -684,6 +682,51 @@
         //     isDrawingMode: true
         // });
         canvas.backgroundColor = settings.canvasColor;
+
+        //! Grid
+        // Set the size of the grid squares
+        var gridSize = 50;
+        // console.log("Canvas Width :: ", canvas.clientWidth)
+
+        // Function to draw grid lines
+        function drawGrid() {
+            var gridLines = [];
+            console.log("Canvas Width :: ", canvas.width)
+            // Draw vertical grid lines
+            for (var i = 0; i < canvas.width / gridSize; i++) {
+                var x = i * gridSize;
+                var line = new fabric.Line([x, 0, x, canvas.height], {
+                    stroke: '#000',
+                    selectable: false
+                });
+                gridLines.push(line);
+            }
+
+            // Draw horizontal grid lines
+            for (var j = 0; j < canvas.height / gridSize; j++) {
+                var y = j * gridSize;
+                var line = new fabric.Line([0, y, canvas.width, y], {
+                    stroke: '#000',
+                    selectable: false
+                });
+                gridLines.push(line);
+            }
+
+            // Create a group for all grid lines and add to canvas
+            var gridGroup = new fabric.Group(gridLines, {
+                selectable: false,
+                highlight: 'rgba(0,255,0,1)',
+                centeredScaling: true
+            });
+            canvas.add(gridGroup);
+            canvas.renderAll();
+        }
+
+        document.getElementById('gridline-view').addEventListener('click', function () {
+            console.log("Clicked")
+            drawGrid();
+        });
+        //! Grid 
 
         /* Set File Name */
         function setFileName(fileName, fileExtention) {
