@@ -20,10 +20,10 @@
     if (window.location.protocol === 'http:') {
         console.log("window.location.protocol === ", window.location.protocol)
         // base_url = 'http://3.110.173.33:5000'
-        base_url = 'https:biovisuals.in'
+        base_url = 'https://biovisuals.in'
         console.log('Running HTTP', base_url);
     } else if (window.location.protocol === 'https:') {
-        base_url = 'https:biovisuals.in'
+        base_url = 'https://biovisuals.in'
         console.log('Running HTTPS', base_url);
     } else {
         console.log('Unknown protocol');
