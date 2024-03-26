@@ -13,7 +13,6 @@
 (function ($) {
     "use strict";
     console.log("Palleon Code")
-
     let base_url;
 
     if (window.location.protocol === 'http:') {
@@ -26,6 +25,8 @@
     } else {
         console.log('Unknown protocol');
     }
+
+    localStorage.setItem("palleon-user-settings", JSON.stringify({ "custom-theme": "light", ...JSON.parse(localStorage.getItem('palleon-user-settings')) }))
 
     $.fn.palleon = function (options) {
         var selector = $(this);
@@ -7633,6 +7634,7 @@
             for (let i = 0; i < keys.length; i++) {
                 settings[keys[i]] = values[i];
             }
+            console.log("Setting For Local Storage ::: ", settings)
             localStorage.setItem("palleon-user-settings", JSON.stringify(settings));
             toastr.success(palleonParams.settingsaved, palleonParams.success);
         });
