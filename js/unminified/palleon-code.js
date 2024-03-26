@@ -1740,7 +1740,7 @@
                 updateCanvasData();
             }
         }
-        setInterval(() => { checkParams() }, 5000)
+        setInterval(() => { checkParams() }, 20000)
 
         //! Function To Clear Params 
         function clearQueryParams() {
