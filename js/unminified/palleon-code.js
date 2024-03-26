@@ -18,9 +18,9 @@
     if (window.location.protocol === 'http:') {
         console.log("window.location.protocol === ", window.location.protocol)
         // base_url = 'http://3.110.173.33:5000'
-        base_url = 'https://biovisuals.in'
+        base_url = 'https://api.biovisuals.in'
     } else if (window.location.protocol === 'https:') {
-        base_url = 'https://biovisuals.in'
+        base_url = 'https://api.biovisuals.in'
         console.log('Running HTTPS', base_url);
     } else {
         console.log('Unknown protocol');
@@ -1344,6 +1344,30 @@
                 alert('Sharing not supported on this browser.');
             }
         }
+
+        //! Group/Ungroup Start
+        // setInterval(() => {
+        //     console.log("Canvas Active Data :: ", canvas.getActiveObjects())
+        // }, 2000);
+
+        document.getElementById('group-canvas-edit').addEventListener('click', groupObjects)
+        function groupObjects() {
+            console.log("Group Clicked")
+            var activeObjects = canvas.getActiveObjects();
+            console.log("Active Object Old ::: ", activeObjects)
+            console.log("Active Object ::: ", activeObjects[0])
+
+            if (activeObjects.length > 1) {
+                var group = new fabric.Group(activeObjects);
+                // var group = new fabric.Group(activeObjects[0]);
+                canvas.discardActiveObject();
+                canvas.add(group);
+                canvas.renderAll();
+
+                console.log("Group Object ::: ", group)
+            }
+        }
+        //! Group/Ungroup End 
 
         //! Save Template
         selector.find('#palleon-json-save').on('click', function () {
@@ -3370,7 +3394,7 @@
 
         /* Layer Toggle */
         function layerToggle(obj) {
-            // console.log("Layer Toggle Object l-3021 ::: ", obj[0])
+            console.log("Layer Toggle Object l-3021 ::: ", obj[0])
             selector.find("#palleon-layers li").removeClass('active');
             if (obj.length >= 2) {
                 for (var i = 0; i < obj.length; i++) {
