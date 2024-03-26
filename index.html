@@ -137,10 +137,10 @@
     <!-- Top Bar END -->
     <!-- Icon Menu START -->
     <div id="palleon-icon-menu">
-        <button id="palleon-btn-adjust" type="button" class="palleon-icon-menu-btn active"
+        <!-- <button id="palleon-btn-adjust" type="button" class="palleon-icon-menu-btn active"
             data-target="#palleon-adjust">
             <span class="material-icons">tune</span><span class="palleon-icon-menu-title">Adjust</span>
-        </button>
+        </button> -->
         <button id="palleon-btn-frames" type="button" class="palleon-icon-menu-btn"
             data-target="#palleon-frames-category">
             <span class="material-icons">wallpaper</span><span class="palleon-icon-menu-title">Icons</span>
@@ -152,7 +152,7 @@
         <button id="palleon-btn-image" type="button" class="palleon-icon-menu-btn" data-target="#palleon-image">
             <span class="material-icons">add_photo_alternate</span><span class="palleon-icon-menu-title">Image</span>
         </button>
-        <button id="palleon-btn-shapes" type="button" class="palleon-icon-menu-btn" data-target="#palleon-shapes">
+        <button id="palleon-btn-shapes" type="button" class="palleon-icon-menu-btn active" data-target="#palleon-shapes">
             <span class="material-icons">category</span><span class="palleon-icon-menu-title">Shapes</span>
         </button>
         <!-- <button id="palleon-btn-elements" type="button" class="palleon-icon-menu-btn" data-target="#palleon-elements">
@@ -188,17 +188,17 @@
             data-target="#modal-add-new-canvas"><span class="material-icons">add_circle</span><span
                 class="palleon-btn-text">Canvas</span>
         </button> -->
-        <button id="palleon-btn-settings" type="button" class="palleon-icon-menu-btn stick-to-bottom"
+        <!-- <button id="palleon-btn-settings" type="button" class="palleon-icon-menu-btn stick-to-bottom"
             data-target="#palleon-settings">
             <span class="material-icons">settings</span><span class="palleon-icon-menu-title">Settings</span>
-        </button>
+        </button> -->
     </div>
     <!-- Icon Menu END -->
     <!-- Icon Panel START -->
     <div id="palleon-icon-panel">
         <div id="palleon-icon-panel-inner">
             <!-- Adjust START -->
-            <div id="palleon-adjust" class="palleon-icon-panel-content">
+            <div id="palleon-adjust" class="palleon-icon-panel-content panel-hide">
                 <ul class="palleon-accordion">
                     <!-- Crop -->
                     <li class="accordion-crop hide-on-canvas-mode">
@@ -1326,7 +1326,7 @@
             <!-- Image END -->
 
             <!-- Shapes START -->
-            <div id="palleon-shapes" class="palleon-icon-panel-content panel-hide">
+            <div id="palleon-shapes" class="palleon-icon-panel-content">
                 <div class="palleon-tabs">
                     <ul class="palleon-tabs-menu">
                         <li id="palleon-shapes-open" class="active" data-target="#palleon-all-shapes">All</li>

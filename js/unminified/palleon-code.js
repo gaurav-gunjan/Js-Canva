@@ -14,7 +14,7 @@
     "use strict";
     console.log("Palleon Code")
     let base_url;
-
+    let untitledId; // This is the ID which generate where there is no ID on Params
     if (window.location.protocol === 'http:') {
         console.log("window.location.protocol === ", window.location.protocol)
         // base_url = 'http://3.110.173.33:5000'
@@ -1278,56 +1278,71 @@
 
         //! Share : File
         document.getElementById('share-canvas-file').addEventListener('click', shareCanvas)
+        // function shareCanvas() {
+        //     console.log("Sharing")
+        //     var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
+        //     // convertToDataURL(json.backgroundImage.src, function (dataUrl) {
+        //     //     json.backgroundImage.src = dataUrl;
+        //     //     var template = JSON.stringify(json);
+        //     //     var key = Math.random().toString(36).substr(2, 9);
+        //     //     var name = selector.find("#palleon-json-save-name").val();
+        //     //     try {
+        //     //         const data = {
+        //     //             template,
+        //     //             templateName: "name",
+        //     //         }
+
+
+        //     //         // Convert JSON data to Base64
+        //     //         const jsonDataBase64 = btoa(JSON.stringify(data));
+
+        //     //         // Create a data URI with Base64-encoded JSON data
+        //     //         const jsonDataUri = 'data:application/json;base64,' + jsonDataBase64;
+
+        //     //         // Convert JSON data to Blob
+        //     //         const jsonDataBlob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+
+
+        //     //         // Share the data using Web Share API
+        //     //         if (navigator.share) {
+        //     //             const file = new File([jsonDataBlob], 'template.json', { type: 'application/json' });
+
+        //     //             navigator.share({
+        //     //                 title: 'Shared Template',
+        //     //                 text: 'Check out this template!',
+        //     //                 url: [file]
+        //     //             }).then(() => {
+        //     //                 console.log('Successfully shared');
+        //     //             }).catch((error) => {
+        //     //                 console.error('Share failed:', error);
+        //     //             });
+        //     //         } else {
+        //     //             alert('Web Share API not supported in this browser.');
+        //     //         }
+
+        //     //     } catch (e) {
+        //     //         toastr.error(e.message, palleonParams.error);
+        //     //     }
+        //     // });
+        // }
+
         function shareCanvas() {
-            console.log("Sharing")
-            var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
-            convertToDataURL(json.backgroundImage.src, function (dataUrl) {
-                json.backgroundImage.src = dataUrl;
-                var template = JSON.stringify(json);
-                var key = Math.random().toString(36).substr(2, 9);
-                var name = selector.find("#palleon-json-save-name").val();
-                try {
-                    console.log("Save Json Name ::: ", name)
-                    const data = {
-                        template,
-                        templateName: "name",
-                    }
+            var id = "YOUR_ID_HERE"; // Replace with the ID you want to share
+            console.log("Untitled Id for Sharing ::: ", untitledId)
+            var urlWithID = window.location.href + '?id=' + encodeURIComponent(untitledId);
+            var shareData = {
+                title: 'Shared ID',
+                text: 'Check out this ID: ' + id,
+                url: urlWithID
+            }
 
-                    // // Convert JSON data to a data URI
-                    // const jsonDataUri = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
-
-                    // Convert JSON data to Base64
-                    const jsonDataBase64 = btoa(JSON.stringify(data));
-
-                    // Create a data URI with Base64-encoded JSON data
-                    const jsonDataUri = 'data:application/json;base64,' + jsonDataBase64;
-
-                    // Convert JSON data to Blob
-                    const jsonDataBlob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-
-
-                    // Share the data using Web Share API
-                    if (navigator.share) {
-                        const file = new File([jsonDataBlob], 'template.json', { type: 'application/json' });
-
-                        navigator.share({
-                            title: 'Shared Template',
-                            text: 'Check out this template!',
-                            url: [file]
-                        }).then(() => {
-                            console.log('Successfully shared');
-                        }).catch((error) => {
-                            console.error('Share failed:', error);
-                        });
-                    } else {
-                        alert('Web Share API not supported in this browser.');
-                    }
-
-                } catch (e) {
-                    toastr.error(e.message, palleonParams.error);
-                }
-            });
-
+            if (navigator.share) {
+                navigator.share(shareData)
+                    .then(() => console.log('Shared successfully'))
+                    .catch((error) => console.error('Error sharing:', error));
+            } else {
+                alert('Sharing not supported on this browser.');
+            }
         }
 
         //! Save Template
@@ -1631,6 +1646,7 @@
                 json.backgroundImage.src = dataUrl;
                 var template = JSON.stringify(json);
                 try {
+                    untitledId = uniqueId
                     // console.log("Save Json Template ::: ", template)
                     const data = {
                         updatedID: uniqueId,
@@ -1673,6 +1689,8 @@
                         contentType: 'application/json',
                         data: JSON.stringify(data)
                     }).done(function (data) {
+                        untitledId = data?.result?._id
+                        console.log("Untitled Data ::: ", data?.result?._id)
                         console.log("Untitle Template Created");
                         // console.log("Untitle Template Created ::: ", data?.result);
                     }).fail(function (error) {
@@ -1698,7 +1716,7 @@
                 updateCanvasData();
             }
         }
-        setInterval(() => { checkParams() }, 20000)
+        setInterval(() => { checkParams() }, 5000)
 
         //! Function To Clear Params 
         function clearQueryParams() {
