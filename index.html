@@ -2971,7 +2971,7 @@
                 if (document.fullscreenElement) {
                     document.exitFullscreen();
                 }
-            } else if (event.key === "f") {
+            } else if (event.key === "f" && !event.ctrlKey && !event.metaKey) {
                 toggleFullScreen();
             }
         });
