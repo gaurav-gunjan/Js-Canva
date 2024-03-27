@@ -137,10 +137,10 @@
     <!-- Top Bar END -->
     <!-- Icon Menu START -->
     <div id="palleon-icon-menu">
-        <button id="palleon-btn-adjust" type="button" class="palleon-icon-menu-btn active"
+        <!-- <button id="palleon-btn-adjust" type="button" class="palleon-icon-menu-btn active"
             data-target="#palleon-adjust">
             <span class="material-icons">tune</span><span class="palleon-icon-menu-title">Adjust</span>
-        </button>
+        </button> -->
         <button id="palleon-btn-frames" type="button" class="palleon-icon-menu-btn"
             data-target="#palleon-frames-category">
             <span class="material-icons">wallpaper</span><span class="palleon-icon-menu-title">Icons</span>
@@ -152,7 +152,8 @@
         <button id="palleon-btn-image" type="button" class="palleon-icon-menu-btn" data-target="#palleon-image">
             <span class="material-icons">add_photo_alternate</span><span class="palleon-icon-menu-title">Image</span>
         </button>
-        <button id="palleon-btn-shapes" type="button" class="palleon-icon-menu-btn" data-target="#palleon-shapes">
+        <button id="palleon-btn-shapes" type="button" class="palleon-icon-menu-btn active"
+            data-target="#palleon-shapes">
             <span class="material-icons">category</span><span class="palleon-icon-menu-title">Shapes</span>
         </button>
         <!-- <button id="palleon-btn-elements" type="button" class="palleon-icon-menu-btn" data-target="#palleon-elements">
@@ -188,17 +189,17 @@
             data-target="#modal-add-new-canvas"><span class="material-icons">add_circle</span><span
                 class="palleon-btn-text">Canvas</span>
         </button> -->
-        <button id="palleon-btn-settings" type="button" class="palleon-icon-menu-btn stick-to-bottom"
+        <!-- <button id="palleon-btn-settings" type="button" class="palleon-icon-menu-btn stick-to-bottom"
             data-target="#palleon-settings">
             <span class="material-icons">settings</span><span class="palleon-icon-menu-title">Settings</span>
-        </button>
+        </button> -->
     </div>
     <!-- Icon Menu END -->
     <!-- Icon Panel START -->
     <div id="palleon-icon-panel">
         <div id="palleon-icon-panel-inner">
             <!-- Adjust START -->
-            <div id="palleon-adjust" class="palleon-icon-panel-content">
+            <div id="palleon-adjust" class="palleon-icon-panel-content panel-hide">
                 <ul class="palleon-accordion">
                     <!-- Crop -->
                     <li class="accordion-crop hide-on-canvas-mode">
@@ -751,7 +752,7 @@
                     style="cursor: pointer;">
                     <span class="palleon-icon-menu-title">Export</span>
                 </div>
-                
+
                 <div id="share-canvas-file" class="palleon-icon-menu-title" style="cursor: pointer;">Share</div>
                 <div class="palleon-icon-menu-title" style="cursor: pointer;">Publication License</div>
                 <div id="close-file" class="palleon-icon-menu-title" style="cursor: pointer;">Close</div>
@@ -775,18 +776,19 @@
                 <div class="palleon-icon-menu-title" style="cursor: pointer;">Copy</div>
                 <div class="palleon-icon-menu-title" style="cursor: pointer;">Paste</div>
                 <!-- <div class="palleon-icon-menu-title" style="cursor: pointer;">Canvas Resize</div> -->
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Select All</div>
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Group/Ungroup</div>
+                <!-- <div class="palleon-icon-menu-title" style="cursor: pointer;">Select All</div> -->
+                <div id="group-canvas-edit" class="palleon-icon-menu-title" style="cursor: pointer;">Group/Ungroup</div>
             </div>
             <!--! Edit Menu End !-->
 
             <!--! View Menu Start !-->
             <div id="palleon-view-menu" class="palleon-icon-panel-content panel-hide"
                 style="display: flex; flex-direction: column; gap: 5px;">
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Zoom In</div>
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Zoom Out</div>
+                <div class="palleon-icon-menu-btn" style="cursor: pointer;" data-target="#palleon-zoom-canvas">
+                    <span class="palleon-icon-menu-title">Zoom</span>
+                </div>
+                <div id="gridline-view" class="palleon-icon-menu-title" style="cursor: pointer;">Gridline</div>
                 <div class="palleon-icon-menu-title" style="cursor: pointer;">Reset</div>
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Gridline</div>
                 <div class="palleon-icon-menu-title" style="cursor: pointer;">Ruler</div>
                 <div class="palleon-icon-menu-title" style="cursor: pointer;">Page Color</div>
                 <div class="palleon-icon-menu-title" style="cursor: pointer;">Alignment</div>
@@ -816,10 +818,34 @@
             </div>
             <!-- Template END -->
 
+            <!-- View Zoom Start -->
+            <div id="palleon-zoom-canvas" class="palleon-icon-panel-content panel-hide">
+
+                <div id="palleon-save-file" type="button" class="palleon-icon-menu-btn" data-target="#palleon-view-menu"
+                    style="cursor: pointer; margin-bottom: 20px;">
+                    <span class="palleon-icon-menu-title">Back</span>
+                </div>
+
+                <div id="palleon-img-zoom-counter" class="palleon-counter"
+                    style="margin-left: initial; border: 2px solid #494949; border-radius: 5px;">
+                    <div id="palleon-img-zoom-out" class="counter-minus"
+                        style="display: flex; align-items: center; border-right: 2px solid #494949;"><span
+                            class="material-icons">remove</span></div>
+                    <input id="palleon-img-zoom" class="palleon-form-field numeric-field" type="text" value="100"
+                        autocomplete="off" data-min="10" data-max="200" data-step="5"
+                        style="background-color: white;  border: none;">
+                    <div id="palleon-img-zoom-in" class="counter-plus"
+                        style="display: flex; align-items: center;border-left: 2px solid #494949;">
+                        <span class="material-icons">add</span>
+                    </div>
+                </div>
+            </div>
+            <!-- View Zoom Start -->
+
             <!-- Canvas START -->
             <div id="palleon-upload-canvas" class="palleon-icon-panel-content panel-hide">
                 <div style="display: flex; flex-direction: column; gap: 20px;">
-                    <div>
+                    <!-- <div>
                         <label>Size</label>
                         <select id="palleon-canvas-size-select" class="palleon-select" autocomplete="off">
                             <option selected value="custom" data-width="800" data-height="800">Custom</option>
@@ -833,15 +859,15 @@
                             <option value="" data-width="1280" data-height="720">Youtube Thumbnail</option>
                             <option value="" data-width="1920" data-height="1080">Wallpaper</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div>
                         <label>Width</label>
-                        <input id="palleon-canvas-width" class="palleon-form-field" type="number" value="800"
+                        <input id="palleon-canvas-width" class="palleon-form-field" type="number" value="500"
                             data-min="1" data-max="10000" autocomplete="off">
                     </div>
                     <div>
                         <label>Height</label>
-                        <input id="palleon-canvas-height" class="palleon-form-field" type="number" value="800"
+                        <input id="palleon-canvas-height" class="palleon-form-field" type="number" value="500"
                             data-min="1" data-max="10000" autocomplete="off">
                     </div>
                     <div>
@@ -1301,7 +1327,7 @@
             <!-- Image END -->
 
             <!-- Shapes START -->
-            <div id="palleon-shapes" class="palleon-icon-panel-content panel-hide">
+            <div id="palleon-shapes" class="palleon-icon-panel-content">
                 <div class="palleon-tabs">
                     <ul class="palleon-tabs-menu">
                         <li id="palleon-shapes-open" class="active" data-target="#palleon-all-shapes">All</li>
@@ -1340,13 +1366,27 @@
                                     </g>
                                 </svg>
                             </div>
-                            <div class="palleon-shape" data-id="line" title="Line">
-                                <svg height="200" width="300" xmlns="http://www.w3.org/2000/svg">
+
+                            <!--! Line  -->
+                            <div class="palleon-shape" data-id="customShape" title="customShape">
+                                <!-- <svg height="200" width="300" xmlns="http://www.w3.org/2000/svg">
                                     <line x1="0" y1="0" x2="300" y2="200"
                                         style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" />
+                                </svg> -->
+                                <svg width="800" height="200" xmlns="http://www.w3.org/2000/svg">
+                                    <line x1="100" y1="50" x2="700" y2="50" style="stroke: black; stroke-width: 2;" />
                                 </svg>
                             </div>
-                            <!-- style="stroke:rgb(0,0,0);stroke-width:0" -->
+
+                            <!--! Arrow  -->
+                            <div class="palleon-shape" data-id="customShape" title="customShape">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                    <path fill="none" stroke="currentColor" stroke-linecap="round"
+                                        stroke-linejoin="round" stroke-width="1.5"
+                                        d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                                </svg>
+                            </div>
+
                             <div class="palleon-shape" data-id="rectangle" title="Rectangle"> <svg
                                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                     version="1.1" width="200" height="200" viewBox="0 0 200 200" xml:space="preserve">
@@ -2158,7 +2198,7 @@
                 <div id="palleon-content" class="">
                     <!-- Canvas Image -->
                     <div id="palleon-canvas-img-wrap">
-                        <img id="palleon-canvas-img" src="assets/placeholder-big.jpg" data-filename=""
+                        <img id="palleon-canvas-img" src="assets/placeholder-biggg.jpg" data-filename=""
                             data-template="" />
                         <!-- 
                             Don't remove img element! To open the editor with a default image, you can update it like the following; 
@@ -2925,37 +2965,6 @@
     <script src="js/unminified/palleon-code.js"></script>
     <!-- <script src="js/unminified/script-frame-with-flow.js"></script> -->
     <script src="js/custom.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            $(".toggle-circle").click(function () {
-                $(this).siblings().toggle();
-            });
-            $(".toggle-ellipse").click(function () {
-                $(this).siblings().toggle();
-            });
-            $(".toggle-square").click(function () {
-                $(this).siblings().toggle();
-            });
-            $(".toggle-rectangle").click(function () {
-                $(this).siblings().toggle();
-            });
-            $(".toggle-triangle").click(function () {
-                $(this).siblings().toggle();
-            });
-            $(".toggle-trapezoid").click(function () {
-                $(this).siblings().toggle();
-            });
-            $(".toggle-pentagon").click(function () {
-                $(this).siblings().toggle();
-            });
-            $(".toggle-more-shape").click(function () {
-                $(this).siblings().toggle();
-            });
-
-        });
-
-    </script>
 
     <!-- Scripts END -->
 </body>
