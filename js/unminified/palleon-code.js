@@ -590,7 +590,9 @@
         deleteimg.src = deleteIcon;
 
         function deleteObject(eventData, transform) {
+            console.log("Tranform Object ::: ", transform)
             var target = transform.target;
+            console.log("Target Type ::: ", target?.type)
             if (target.type === 'activeSelection') {
                 $.each(target._objects, function (index, val) {
                     var item = selector.find("#palleon-layers #" + val.id)
@@ -728,6 +730,107 @@
             drawGrid();
         });
         //! Grid 
+
+        //! Keyboard Event For Cut & Copy & Paste Start
+        var _clipboard;
+
+        function handleKeyDown(event) {
+            if (event.ctrlKey && event.key === 'c') {
+                copyData();
+            }
+            else if (event.ctrlKey && event.key === 'v') {
+                pasteData();
+            }
+            else if (event.ctrlKey && event.key === 'x') {
+                cutData();
+            }
+            else if (event.ctrlKey && event.key === 'z') {
+                undoData();
+            }
+            else if (event.ctrlKey && event.key === 'y') {
+                redoData();
+            }
+        }
+        document.addEventListener("keydown", handleKeyDown);
+        //! Keyboard Event For Copy & Paste End
+
+        //! Cut Start
+        document.getElementById('cut-canvas-edit').addEventListener('click', cutData)
+        function cutData() {
+            console.log("Cut Function")
+            // Check if there is an active object on the canvas
+            var activeObject = canvas.getActiveObject();
+            if (activeObject) {
+                // Clone the active object
+                activeObject.clone(function (cloned) {
+                    // Store the cloned object in _clipboard
+                    _clipboard = cloned;
+                });
+                // Remove the active object from the canvas
+                activeObject.set({
+                    type: "Cut Data",    //TODO ::: For Removing Warning As This Key is getting 'undefined'
+                });
+                canvas.remove(activeObject);
+                console.log("Removed Data From Canvas on CUT ::: ", activeObject)
+                deleteObject('event', { target: activeObject }) //TODO ::: This function is called for removing data from layer
+                // Render the canvas
+                canvas.requestRenderAll();
+            }
+        }
+        //! Cut End
+
+        //! Copy Start
+        document.getElementById('copy-canvas-edit').addEventListener('click', copyData)
+        function copyData() {
+            console.log("Clicked")
+            canvas.getActiveObject().clone(function (cloned) {
+                _clipboard = cloned;
+            });
+            console.log("Clip Data :: ", _clipboard)
+
+            // var activeObject = canvas.getActiveObject();
+            // if (activeObject) {
+            //     // Clone the active object
+            //     activeObject.clone(function (cloned) {
+            //         // Store the cloned object in _clipboard
+            //         _clipboard = cloned;
+            //     });
+            // }
+        }
+        //! Copy End 
+
+        //! Paste Start 
+        document.getElementById('paste-canvas-edit').addEventListener('click', pasteData)
+        function pasteData() {
+            // clone again, so you can do multiple copies.
+            _clipboard.clone(function (clonedObj) {
+                canvas.discardActiveObject();
+                clonedObj.set({
+                    left: clonedObj.left + 10,
+                    top: clonedObj.top + 10,
+                    evented: true,
+                    objectType: "Paste Data"     //TODO ::: For Removing Warning As This Key is getting 'undefined'
+                });
+                if (clonedObj.type === 'activeSelection') {
+                    // active selection needs a reference to the canvas.
+                    clonedObj.canvas = canvas;
+                    clonedObj.forEachObject(function (obj) {
+                        console.log("Paste Obj (if) ::: ", obj)
+                        canvas.add(obj);
+                    });
+                    // this should solve the unselectability
+                    clonedObj.setCoords();
+                } else {
+                    console.log("Paste Obj (else) ::: ", clonedObj)
+                    canvas.add(clonedObj);
+                }
+                _clipboard.top += 10;
+                _clipboard.left += 10;
+                canvas.setActiveObject(clonedObj);
+                canvas.requestRenderAll();
+            });
+        }
+        //! Paste End 
 
         /* Set File Name */
         function setFileName(fileName, fileExtention) {
@@ -2843,7 +2946,9 @@
         }
 
         // Undo
-        selector.find('#palleon-undo').on('click', function () {
+        selector.find('#palleon-undo').on('click', undoData);
+        function undoData() {
+            console.log("Undo Data")
             var target = selector.find('#palleon-history-list li.active').next('li');
             if (target.length) {
                 target.find('.palleon-btn.primary').trigger('click');
@@ -2851,10 +2956,12 @@
             } else {
                 selector.find('#palleon-undo').prop('disabled', true);
             }
-        });
+        }
 
         // Redo
-        selector.find('#palleon-redo').on('click', function () {
+        selector.find('#palleon-redo').on('click', redoData);
+        function redoData() {
+            console.log("Redo Data")
             var target = selector.find('#palleon-history-list li.active').prev('li');
             if (target.length) {
                 target.find('.palleon-btn.primary').trigger('click');
@@ -2862,7 +2969,7 @@
             } else {
                 selector.find('#palleon-redo').prop('disabled', true);
             }
-        });
+        }
 
         // Delete history
         selector.find('#palleon-history-list').on('click', '.palleon-btn.danger', function () {
@@ -3109,7 +3216,9 @@
                     obj.set('id', new Date().getTime());
 
                     selector.find("#palleon-layers > li").removeClass('active');
-
+                    console.log("Object During Adding ::: ", obj)
+                    console.log("Object ID During Adding ::: ", obj?.id)
+                    console.log("Object Type During Adding ::: ", obj.objectType)
                     if (obj.objectType == 'textbox') {
                         layerName = obj.text;
                         layerIcon = 'title';
@@ -3165,6 +3274,7 @@
                     output = '<li id="' + obj.id + '" data-type="' + obj.objectType + '" class="layer-' + obj.objectType + ' active" data-sort="' + order + '"><span class="material-icons">' + layerIcon + '</span><input class="layer-name" autocomplete="off" value="' + layerName + '" /><span class="material-icons layer-settings">settings</span><div class="layer-icons"><a class="material-icons lock-layer ' + lock + '" title="' + palleonParams.lockunlock + '">' + lockTag + '</a><a class="material-icons text-success duplicate-layer" title="' + palleonParams.duplicate + '">content_copy</a><a class="material-icons layer-visibility ' + visibility + '" title="' + palleonParams.showhide + '">' + visibilityTag + '</a><a class="material-icons text-danger delete-layer" title="' + palleonParams.delete + '">clear</a></div></li>';
 
                     selector.find('#palleon-layers').prepend(output);
+                    console.log("Object Id ::: ", obj.id)
                     deleteLayerEvent(obj.id);
                     cloneLayerEvent(obj.id);
                     visibilityLayerEvent(obj.id);
@@ -3404,6 +3514,9 @@
                 // let newObjParaChange = { strokeWidth: 1 }
                 // obj = { ...obj[0], ...newObjParaChange };
                 obj = obj[0];
+                console.log("Object ::: ", obj)
+                console.log("Type of object ::: ", typeof obj)
+                console.log("Object Type ::: ", obj.objectType)
 
                 if (typeof obj !== "undefined" && obj.objectType) {
                     // Textbox
@@ -3469,7 +3582,7 @@
                         // let newObj = { fill: "#fff", strokeWidth: 1 }
                         // setShapeSettings({ ...obj, ...newObj });
                         setShapeSettings(obj);
-                        // console.log("setShapeSettings(obj)", obj.fill)
+                        console.log("setShapeSettings(obj)", obj)
                         if (!selector.find('#palleon-btn-shapes').hasClass('active')) {
                             selector.find('#palleon-btn-shapes').trigger('click');
                         }
@@ -3482,6 +3595,7 @@
                     }
                 } else {
                     $.each(obj, function (index, val) {
+                        console.log("Object for id :: ", val?.id)
                         selector.find("#palleon-layers #" + val.id).addClass('active');
                     });
                 }
