@@ -12,7 +12,21 @@
 
 (function ($) {
     "use strict";
-    console.log("Palleon")
+    console.log("Palleon Code")
+    let base_url;
+    let untitledId; // This is the ID which generate where there is no ID on Params
+    if (window.location.protocol === 'http:') {
+        console.log("window.location.protocol === ", window.location.protocol)
+        // base_url = 'http://3.110.173.33:5000'
+        base_url = 'https://api.biovisuals.in'
+    } else if (window.location.protocol === 'https:') {
+        base_url = 'https://api.biovisuals.in'
+        console.log('Running HTTPS', base_url);
+    } else {
+        console.log('Unknown protocol');
+    }
+
+    localStorage.setItem("palleon-user-settings", JSON.stringify({ "custom-theme": "light", ...JSON.parse(localStorage.getItem('palleon-user-settings')) }))
 
     $.fn.palleon = function (options) {
         var selector = $(this);
@@ -298,7 +312,7 @@
         toastr.options.hideEasing = 'linear';
         toastr.options.closeEasing = 'linear';
 
-        // UI Draggable
+        //! UI Draggable
         selector.find("#palleon-canvas-wrap").draggable({ disabled: true });
 
         // Pagination
@@ -576,7 +590,9 @@
         deleteimg.src = deleteIcon;
 
         function deleteObject(eventData, transform) {
+            console.log("Tranform Object ::: ", transform)
             var target = transform.target;
+            console.log("Target Type ::: ", target?.type)
             if (target.type === 'activeSelection') {
                 $.each(target._objects, function (index, val) {
                     var item = selector.find("#palleon-layers #" + val.id)
@@ -665,7 +681,156 @@
         /* Create Canvas */
         c = selector.find('#palleon-canvas')[0];
         canvas = new fabric.Canvas(c);
+        // canvas = new fabric.Canvas(c, {
+        //     isDrawingMode: true
+        // });
         canvas.backgroundColor = settings.canvasColor;
+
+        //! Grid
+        // Set the size of the grid squares
+        var gridSize = 50;
+        // console.log("Canvas Width :: ", canvas.clientWidth)
+
+        // Function to draw grid lines
+        function drawGrid() {
+            var gridLines = [];
+            console.log("Canvas Width :: ", canvas.width)
+            // Draw vertical grid lines
+            for (var i = 0; i < canvas.width / gridSize; i++) {
+                var x = i * gridSize;
+                var line = new fabric.Line([x, 0, x, canvas.height], {
+                    stroke: '#000',
+                    selectable: false
+                });
+                gridLines.push(line);
+            }
+
+            // Draw horizontal grid lines
+            for (var j = 0; j < canvas.height / gridSize; j++) {
+                var y = j * gridSize;
+                var line = new fabric.Line([0, y, canvas.width, y], {
+                    stroke: '#000',
+                    selectable: false
+                });
+                gridLines.push(line);
+            }
+
+            // Create a group for all grid lines and add to canvas
+            var gridGroup = new fabric.Group(gridLines, {
+                selectable: false,
+                highlight: 'rgba(0,255,0,1)',
+                centeredScaling: true
+            });
+            canvas.add(gridGroup);
+            canvas.renderAll();
+        }
+
+        document.getElementById('gridline-view').addEventListener('click', function () {
+            console.log("Clicked")
+            drawGrid();
+        });
+        //! Grid 
+
+        //! Keyboard Event For Cut & Copy & Paste Start
+        var _clipboard;
+
+        function handleKeyDown(event) {
+            if (event.ctrlKey && event.key === 'c') {
+                copyData();
+            }
+            else if (event.ctrlKey && event.key === 'v') {
+                pasteData();
+            }
+            else if (event.ctrlKey && event.key === 'x') {
+                cutData();
+            }
+            else if (event.ctrlKey && event.key === 'z') {
+                undoData();
+            }
+            else if (event.ctrlKey && event.key === 'y') {
+                redoData();
+            }
+        }
+        document.addEventListener("keydown", handleKeyDown);
+        //! Keyboard Event For Copy & Paste End
+
+        //! Cut Start
+        document.getElementById('cut-canvas-edit').addEventListener('click', cutData)
+        function cutData() {
+            console.log("Cut Function")
+            // Check if there is an active object on the canvas
+            var activeObject = canvas.getActiveObject();
+            if (activeObject) {
+                // Clone the active object
+                activeObject.clone(function (cloned) {
+                    // Store the cloned object in _clipboard
+                    _clipboard = cloned;
+                });
+                // Remove the active object from the canvas
+                activeObject.set({
+                    type: "Cut Data",    //TODO ::: For Removing Warning As This Key is getting 'undefined'
+                });
+                canvas.remove(activeObject);
+                console.log("Removed Data From Canvas on CUT ::: ", activeObject)
+                deleteObject('event', { target: activeObject }) //TODO ::: This function is called for removing data from layer
+                // Render the canvas
+                canvas.requestRenderAll();
+            }
+        }
+        //! Cut End
+
+        //! Copy Start
+        document.getElementById('copy-canvas-edit').addEventListener('click', copyData)
+        function copyData() {
+            console.log("Clicked")
+            canvas.getActiveObject().clone(function (cloned) {
+                _clipboard = cloned;
+            });
+            console.log("Clip Data :: ", _clipboard)
+
+            // var activeObject = canvas.getActiveObject();
+            // if (activeObject) {
+            //     // Clone the active object
+            //     activeObject.clone(function (cloned) {
+            //         // Store the cloned object in _clipboard
+            //         _clipboard = cloned;
+            //     });
+            // }
+        }
+        //! Copy End 
+
+        //! Paste Start 
+        document.getElementById('paste-canvas-edit').addEventListener('click', pasteData)
+        function pasteData() {
+            // clone again, so you can do multiple copies.
+            _clipboard.clone(function (clonedObj) {
+                canvas.discardActiveObject();
+                clonedObj.set({
+                    left: clonedObj.left + 10,
+                    top: clonedObj.top + 10,
+                    evented: true,
+                    objectType: "Paste Data"     //TODO ::: For Removing Warning As This Key is getting 'undefined'
+                });
+                if (clonedObj.type === 'activeSelection') {
+                    // active selection needs a reference to the canvas.
+                    clonedObj.canvas = canvas;
+                    clonedObj.forEachObject(function (obj) {
+                        console.log("Paste Obj (if) ::: ", obj)
+                        canvas.add(obj);
+                    });
+                    // this should solve the unselectability
+                    clonedObj.setCoords();
+                } else {
+                    console.log("Paste Obj (else) ::: ", clonedObj)
+                    canvas.add(clonedObj);
+                }
+                _clipboard.top += 10;
+                _clipboard.left += 10;
+                canvas.setActiveObject(clonedObj);
+                canvas.requestRenderAll();
+            });
+        }
+        //! Paste End 
 
         /* Set File Name */
         function setFileName(fileName, fileExtention) {
@@ -1145,6 +1310,8 @@
 
         /* Empty Canvas */
         selector.find('#palleon-canvas-create').on('click', function () {
+            console.log("New Created")
+            clearQueryParams()
             setFileName(new Date().getTime(), '');
             init('canvas');
         });
@@ -1212,26 +1379,126 @@
 
         });
 
-        /* Save Template */
+        //! Share : File
+        document.getElementById('share-canvas-file').addEventListener('click', shareCanvas)
+        // function shareCanvas() {
+        //     console.log("Sharing")
+        //     var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
+        //     // convertToDataURL(json.backgroundImage.src, function (dataUrl) {
+        //     //     json.backgroundImage.src = dataUrl;
+        //     //     var template = JSON.stringify(json);
+        //     //     var key = Math.random().toString(36).substr(2, 9);
+        //     //     var name = selector.find("#palleon-json-save-name").val();
+        //     //     try {
+        //     //         const data = {
+        //     //             template,
+        //     //             templateName: "name",
+        //     //         }
+
+
+        //     //         // Convert JSON data to Base64
+        //     //         const jsonDataBase64 = btoa(JSON.stringify(data));
+
+        //     //         // Create a data URI with Base64-encoded JSON data
+        //     //         const jsonDataUri = 'data:application/json;base64,' + jsonDataBase64;
+
+        //     //         // Convert JSON data to Blob
+        //     //         const jsonDataBlob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+
+
+        //     //         // Share the data using Web Share API
+        //     //         if (navigator.share) {
+        //     //             const file = new File([jsonDataBlob], 'template.json', { type: 'application/json' });
+
+        //     //             navigator.share({
+        //     //                 title: 'Shared Template',
+        //     //                 text: 'Check out this template!',
+        //     //                 url: [file]
+        //     //             }).then(() => {
+        //     //                 console.log('Successfully shared');
+        //     //             }).catch((error) => {
+        //     //                 console.error('Share failed:', error);
+        //     //             });
+        //     //         } else {
+        //     //             alert('Web Share API not supported in this browser.');
+        //     //         }
+
+        //     //     } catch (e) {
+        //     //         toastr.error(e.message, palleonParams.error);
+        //     //     }
+        //     // });
+        // }
+
+        function shareCanvas() {
+            var id = "YOUR_ID_HERE"; // Replace with the ID you want to share
+            console.log("Untitled Id for Sharing ::: ", untitledId)
+            var urlWithID = window.location.href + '?id=' + encodeURIComponent(untitledId);
+            var shareData = {
+                title: 'Shared ID',
+                text: 'Check out this ID: ' + id,
+                url: urlWithID
+            }
+
+            if (navigator.share) {
+                navigator.share(shareData)
+                    .then(() => console.log('Shared successfully'))
+                    .catch((error) => console.error('Error sharing:', error));
+            } else {
+                alert('Sharing not supported on this browser.');
+            }
+        }
+
+        //! Group/Ungroup Start
+        // setInterval(() => {
+        //     console.log("Canvas Active Data :: ", canvas.getActiveObjects())
+        // }, 2000);
+
+        document.getElementById('group-canvas-edit').addEventListener('click', groupObjects)
+        function groupObjects() {
+            console.log("Group Clicked")
+            var activeObjects = canvas.getActiveObjects();
+            console.log("Active Object Old ::: ", activeObjects)
+            console.log("Active Object ::: ", activeObjects[0])
+
+            if (activeObjects.length > 1) {
+                var group = new fabric.Group(activeObjects);
+                // var group = new fabric.Group(activeObjects[0]);
+                canvas.discardActiveObject();
+                canvas.add(group);
+                canvas.renderAll();
+
+                console.log("Group Object ::: ", group)
+            }
+        }
+        //! Group/Ungroup End 
+
+        //! Save Template
         selector.find('#palleon-json-save').on('click', function () {
             var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
             convertToDataURL(json.backgroundImage.src, function (dataUrl) {
                 json.backgroundImage.src = dataUrl;
                 var template = JSON.stringify(json);
                 var key = Math.random().toString(36).substr(2, 9);
-                var name = selector.find("#palleon-save-img-name").val();
+                var name = selector.find("#palleon-json-save-name").val();
                 try {
-                    console.log("Save Json Key ::: ", key)
-                    console.log("Save Json Template ::: ", template)
+                    // console.log("Save Json Template ::: ", template)
                     console.log("Save Json Name ::: ", name)
-                    db.collection('assets').add({
-                        key: key,
-                        src: template,
-                        name: name,
-                        type: 'json'
-                    }).then(document => {
-                        toastr.success(palleonParams.tempsaved, palleonParams.saved);
-                        getAssets();
+                    const data = {
+                        template,
+                        templateName: name,
+                        templateKey: key,
+                        userName: "ksbmksbm17"
+                    }
+                    $.ajax({
+                        url: `${base_url}/api/user/add_template`,
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data)
+                    }).done(function (data) {
+                        console.log("Template Data ::: ", data?.result);
+                        toastr.success("Template Saved", "Saved !!!!");
+                    }).fail(function (error) {
+                        console.error('Error fetching data:', error);
                     });
                 } catch (e) {
                     toastr.error(e.message, palleonParams.error);
@@ -1241,7 +1508,43 @@
             });
         });
 
-        /* Download Template */
+        //! Save Template : File
+        selector.find('#palleon-json-save-file').on('click', function () {
+            var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
+            convertToDataURL(json.backgroundImage.src, function (dataUrl) {
+                json.backgroundImage.src = dataUrl;
+                var template = JSON.stringify(json);
+                var key = Math.random().toString(36).substr(2, 9);
+                var name = selector.find("#palleon-json-save-name-file").val();
+                try {
+                    // console.log("Save Json Template ::: ", template)
+                    console.log("Save Json Name ::: ", name)
+                    const data = {
+                        template,
+                        templateName: name,
+                        templateKey: key,
+                        userName: "ksbmksbm17"
+                    }
+                    $.ajax({
+                        url: `${base_url}/api/user/add_template`,
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data)
+                    }).done(function (data) {
+                        console.log("Template Data ::: ", data?.result);
+                        toastr.success("Template Saved", "Saved !!!!");
+                    }).fail(function (error) {
+                        console.error('Error fetching data:', error);
+                    });
+                } catch (e) {
+                    toastr.error(e.message, palleonParams.error);
+                }
+
+                selector.find('.palleon-modal').hide();
+            });
+        });
+
+        //! Download Template
         selector.find('#palleon-json-download').on('click', function () {
             var name = selector.find('#palleon-json-download-name').val();
             var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
@@ -1257,8 +1560,34 @@
             });
         });
 
+        //! Download Template : File
+        selector.find('#palleon-json-download-file').on('click', function () {
+            var name = selector.find('#palleon-json-download-name-file').val();
+            var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
+            convertToDataURL(json.backgroundImage.src, function (dataUrl) {
+                json.backgroundImage.src = dataUrl;
+                var json2 = JSON.stringify(json);
+                var a = document.createElement("a");
+                var file = new Blob([json2], { type: "text/plain" });
+                a.href = URL.createObjectURL(file);
+                a.download = name + '.json';
+                a.click();
+                selector.find('.palleon-modal').hide();
+            });
+        });
+
+        //! Close Button Start
+        document.getElementById('close-file').addEventListener('click', () => {
+            console.log("Close Clicked")
+            // document.getElementById('palleon-icon-panel').style.display = 'none'
+            closePanel()
+        })
+        //! Close Button End
+
         /* Load JSON */
         function loadJSON(json) {
+            // console.table("Load Json Parse ::: ", json)
+
             selector.find('#palleon-canvas-loader').css('display', 'flex');
             rotate = json.backgroundImage.angle;
             scaleX = json.backgroundImage.scaleX;
@@ -1372,6 +1701,7 @@
 
         /* Upload Template */
         selector.find('#palleon-json-upload').on('change', function (e) {
+            clearQueryParams()
             selector.find('#palleon-canvas-wrap, .palleon-content-bar').css('visibility', 'visible');
             selector.find('#palleon-canvas-loader').css('display', 'flex');
             var reader = new FileReader();
@@ -1385,6 +1715,7 @@
                 }, 100);
             };
             reader.readAsText(e.target.files[0]);
+            console.log("Loaded Data")
             selector.find('.palleon-modal').hide();
         });
 
@@ -1406,6 +1737,124 @@
             });
         }
 
+        //! Get Params From URL 
+        const urlParams = new URLSearchParams(window.location.search);
+        const templateNameForUpdate = urlParams.get('name');
+        const uniqueId = urlParams.get('id');
+        //! Get Template/Canvas Data using Params ID 
+        function getDataFromParams() {
+            console.log("Data get")
+            $.ajax({
+                url: `${base_url}/api/user/getTempdata`,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ tempServerID: uniqueId })
+            }).done(function (data) {
+                // console.log("Server Data Template::: ", data?.result?.template)
+                const parsedDataAPI = JSON.parse(data?.result?.template)
+                // console.log("Parsed Template Data API::: ", parsedDataAPI)
+
+                setTimeout(() => {
+                    loadJSON(parsedDataAPI)
+                }, 1000);
+            }).fail(function (error) {
+                console.error('Error fetching data:', error);
+            });
+        }
+        if (uniqueId) { getDataFromParams() }
+
+        //! Auto Save When ID on Params : Auto Update  
+        function updateCanvasData() {
+            console.log("Data Update With Id")
+            console.log("Update JSON New API hitted With ID")
+            var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
+            // console.log("Update JSON New With ID ::: ", json)
+            convertToDataURL(json.backgroundImage.src, function (dataUrl) {
+                json.backgroundImage.src = dataUrl;
+                var template = JSON.stringify(json);
+                try {
+                    untitledId = uniqueId
+                    // console.log("Save Json Template ::: ", template)
+                    const data = {
+                        updatedID: uniqueId,
+                        template,
+                    }
+                    $.ajax({
+                        url: `${base_url}/api/user/tempdataUpdate`,
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data)
+                    }).done(function (data) {
+                        // console.log("Updated Data Data ::: ", data?.result);
+                        // toastr.success("Template Update", "Update !!!!");
+                    }).fail(function (error) {
+                        console.error('Error fetching data:', error);
+                    });
+                } catch (e) {
+                    toastr.error(e.message, palleonParams.error);
+                }
+            });
+        }
+
+        //! Auto Save When No ID on Params : Auto Create
+        function updateCanvasDataWithoutID() {
+            console.log("Data Update Without ID")
+            console.log("Update JSON New API hitted Without ID")
+            var json = canvas.toJSON(['objectType', 'gradientFill', 'roundedCorders', 'mode', 'selectable', 'lockMovementX', 'lockMovementY', 'lockRotation', 'crossOrigin', 'layerName', 'maskType']);
+
+            convertToDataURL(json.backgroundImage.src, function (dataUrl) {
+                json.backgroundImage.src = dataUrl;
+                var template = JSON.stringify(json);
+                try {
+                    // console.log("Save Json Template ::: ", template)
+                    const data = {
+                        template,
+                    }
+                    $.ajax({
+                        url: `${base_url}/api/user/untitleTemp`,
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data)
+                    }).done(function (data) {
+                        untitledId = data?.result?._id
+                        console.log("Untitled Data ::: ", data?.result?._id)
+                        console.log("Untitle Template Created");
+                        // console.log("Untitle Template Created ::: ", data?.result);
+                    }).fail(function (error) {
+                        console.error('Error fetching data:', error);
+                    });
+                } catch (e) {
+                    toastr.error(e.message, palleonParams.error);
+                }
+
+                selector.find('.palleon-modal').hide();
+            });
+        }
+
+        let currentUrlWithoutID;
+        function updateCurrentUrl() {
+            currentUrlWithoutID = new URL(window.location.href);
+        }
+        function checkParams() {
+            updateCurrentUrl();
+            if (currentUrlWithoutID.search === '') {
+                updateCanvasDataWithoutID();
+            } else {
+                updateCanvasData();
+            }
+        }
+        setInterval(() => { checkParams() }, 20000)
+
+        //! Function To Clear Params 
+        function clearQueryParams() {
+            var currentUrl = new URL(window.location.href);
+
+            if (currentUrl.search) {
+                currentUrl.search = ''; // Remove all query parameters
+                window.history.replaceState({}, document.title, currentUrl);
+            }
+        }
+
         /* Add Template */
         selector.find('.template-selection').on('click', '.palleon-select-template', function () {
             selector.find('#palleon-canvas-wrap, .palleon-content-bar').css('visibility', 'visible');
@@ -1415,6 +1864,8 @@
             objects.filter(element => element.objectType != 'BG').forEach(element => canvas.remove(element));
             selector.find('#palleon-layers li').remove();
             checkLayers();
+            console.log("$(this) ::: ", $(this))
+            console.log("$(this).data('json') to Data :: ", $(this).data('json'))
             $.getJSON($(this).data('json'), function (json) {
                 loadJSON(json);
                 setTimeout(function () {
@@ -2495,7 +2946,9 @@
         }
 
         // Undo
-        selector.find('#palleon-undo').on('click', function () {
+        selector.find('#palleon-undo').on('click', undoData);
+        function undoData() {
+            console.log("Undo Data")
             var target = selector.find('#palleon-history-list li.active').next('li');
             if (target.length) {
                 target.find('.palleon-btn.primary').trigger('click');
@@ -2503,10 +2956,12 @@
             } else {
                 selector.find('#palleon-undo').prop('disabled', true);
             }
-        });
+        }
 
         // Redo
-        selector.find('#palleon-redo').on('click', function () {
+        selector.find('#palleon-redo').on('click', redoData);
+        function redoData() {
+            console.log("Redo Data")
             var target = selector.find('#palleon-history-list li.active').prev('li');
             if (target.length) {
                 target.find('.palleon-btn.primary').trigger('click');
@@ -2514,7 +2969,7 @@
             } else {
                 selector.find('#palleon-redo').prop('disabled', true);
             }
-        });
+        }
 
         // Delete history
         selector.find('#palleon-history-list').on('click', '.palleon-btn.danger', function () {
@@ -2563,6 +3018,31 @@
                 selector.find('.palleon-modal').hide();
             }
         });
+
+        //! Undo-Redo Edit Section Start
+        // Undo
+        selector.find('#palleon-undo-edit').on('click', function () {
+            console.log("Clicked")
+            var target = selector.find('#palleon-history-list li.active').next('li');
+            if (target.length) {
+                target.find('.palleon-btn.primary').trigger('click');
+                selector.find('#palleon-redo-edit').prop('disabled', false);
+            } else {
+                selector.find('#palleon-undo-edit').prop('disabled', true);
+            }
+        });
+
+        // Redo
+        selector.find('#palleon-redo-edit').on('click', function () {
+            var target = selector.find('#palleon-history-list li.active').prev('li');
+            if (target.length) {
+                target.find('.palleon-btn.primary').trigger('click');
+                selector.find('#palleon-undo-edit').prop('disabled', false);
+            } else {
+                selector.find('#palleon-redo-edit').prop('disabled', true);
+            }
+        });
+        //! Undo-Redo Edit Section End 
 
         /* EVENTS */
 
@@ -2736,7 +3216,9 @@
                     obj.set('id', new Date().getTime());
 
                     selector.find("#palleon-layers > li").removeClass('active');
-
+                    console.log("Object During Adding ::: ", obj)
+                    console.log("Object ID During Adding ::: ", obj?.id)
+                    console.log("Object Type During Adding ::: ", obj.objectType)
                     if (obj.objectType == 'textbox') {
                         layerName = obj.text;
                         layerIcon = 'title';
@@ -2792,6 +3274,7 @@
                     output = '<li id="' + obj.id + '" data-type="' + obj.objectType + '" class="layer-' + obj.objectType + ' active" data-sort="' + order + '"><span class="material-icons">' + layerIcon + '</span><input class="layer-name" autocomplete="off" value="' + layerName + '" /><span class="material-icons layer-settings">settings</span><div class="layer-icons"><a class="material-icons lock-layer ' + lock + '" title="' + palleonParams.lockunlock + '">' + lockTag + '</a><a class="material-icons text-success duplicate-layer" title="' + palleonParams.duplicate + '">content_copy</a><a class="material-icons layer-visibility ' + visibility + '" title="' + palleonParams.showhide + '">' + visibilityTag + '</a><a class="material-icons text-danger delete-layer" title="' + palleonParams.delete + '">clear</a></div></li>';
 
                     selector.find('#palleon-layers').prepend(output);
+                    console.log("Object Id ::: ", obj.id)
                     deleteLayerEvent(obj.id);
                     cloneLayerEvent(obj.id);
                     visibilityLayerEvent(obj.id);
@@ -3031,6 +3514,9 @@
                 // let newObjParaChange = { strokeWidth: 1 }
                 // obj = { ...obj[0], ...newObjParaChange };
                 obj = obj[0];
+                console.log("Object ::: ", obj)
+                console.log("Type of object ::: ", typeof obj)
+                console.log("Object Type ::: ", obj.objectType)
 
                 if (typeof obj !== "undefined" && obj.objectType) {
                     // Textbox
@@ -3096,7 +3582,7 @@
                         // let newObj = { fill: "#fff", strokeWidth: 1 }
                         // setShapeSettings({ ...obj, ...newObj });
                         setShapeSettings(obj);
-                        console.log("setShapeSettings(obj)", obj.fill)
+                        console.log("setShapeSettings(obj)", obj)
                         if (!selector.find('#palleon-btn-shapes').hasClass('active')) {
                             selector.find('#palleon-btn-shapes').trigger('click');
                         }
@@ -3109,6 +3595,7 @@
                     }
                 } else {
                     $.each(obj, function (index, val) {
+                        console.log("Object for id :: ", val?.id)
                         selector.find("#palleon-layers #" + val.id).addClass('active');
                     });
                 }
@@ -3657,6 +4144,16 @@
 
         /* Rotate Left */
         selector.find('#palleon-rotate-left').on('click', function () {
+            rotateCanvas('left');
+        });
+
+        //! Rotate Right : Edit
+        selector.find('#palleon-rotate-right-edit').on('click', function () {
+            rotateCanvas('right');
+        });
+
+        //! Rotate Left : Edit
+        selector.find('#palleon-rotate-left-edit').on('click', function () {
             rotateCanvas('left');
         });
 
@@ -5141,7 +5638,7 @@
 
         /* Set Shape Settings */
         function setShapeSettings(shape) {
-            console.log("setShapeSettings ::: ", shape)
+            // console.log("setShapeSettings ::: ", shape)
             selector.find('#palleon-shape-settings-info').hide();
             selector.find('#shape-outline-width').val(shape.strokeWidth);
             if (shape.gradientFill == 'none' || shape.gradientFill == '' || shape.gradientFill === undefined) {
@@ -5266,8 +5763,8 @@
                     svg.set('objectType', 'customShape');
                     svg.set('gradientFill', 'none');
                     svg.set('stroke', '#000');
-                    svg.set('strokeWidth', 0);
-                    svg.set('fill', '#fff');
+                    svg.set('strokeWidth', 1);
+                    svg.set('fill', '');
                     canvas.add(svg);
                     if (print_a) {
                         svg.scaleToWidth((print_a.width * 0.5) * canvas.getZoom());
@@ -5292,9 +5789,9 @@
                 if (val == 'circle') {
                     shape = new fabric.Circle({
                         radius: 50,
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'circle',
                         width: 100,
                         height: 100,
@@ -5315,9 +5812,9 @@
                     shape = new fabric.Ellipse({
                         rx: 75,
                         ry: 50,
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'ellipse',
                         width: 100,
                         height: 100,
@@ -5330,9 +5827,9 @@
                 } else if (val == 'square') {
                     shape = new fabric.Rect({
                         radius: 50,
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'square',
                         width: 100,
                         height: 100,
@@ -5352,9 +5849,9 @@
                 } else if (val == 'rectangle') {
                     shape = new fabric.Rect({
                         radius: 50,
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'rectangle',
                         width: 200,
                         height: 150,
@@ -5367,9 +5864,9 @@
                 } else if (val == 'triangle') {
                     shape = new fabric.Triangle({
                         radius: 50,
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'triangle',
                         width: 100,
                         height: 100,
@@ -5382,9 +5879,9 @@
                 } else if (val == 'trapezoid') {
                     polygon = [{ x: -100, y: -50 }, { x: 100, y: -50 }, { x: 150, y: 50 }, { x: -150, y: 50 }];
                     shape = new fabric.Polygon(polygon, {
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'trapezoid',
                         width: 100,
                         height: 100,
@@ -5401,9 +5898,9 @@
                     { x: 88.8, y: 40.4 },
                     { x: 74, y: 86 }];
                     shape = new fabric.Polygon(polygon, {
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'pentagon',
                         width: 100,
                         height: 100,
@@ -5424,9 +5921,9 @@
                     { x: 65.2, y: 87.4 }
                     ];
                     shape = new fabric.Polygon(polygon, {
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'octagon',
                         width: 100,
                         height: 100,
@@ -5444,9 +5941,9 @@
                     { x: 742, y: 262.5 },
                     { x: 742, y: 137.5 }];
                     shape = new fabric.Polygon(polygon, {
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'emerald',
                         width: 100,
                         height: 100,
@@ -5468,9 +5965,9 @@
                     { x: 231, y: 161 },
                     { x: 321, y: 161 }];
                     shape = new fabric.Polygon(polygon, {
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'star',
                         width: 100,
                         height: 100,
@@ -5486,9 +5983,9 @@
                     { x: 180.556, y: 125 },
                     { x: 125, y: 221.227 }];
                     shape = new fabric.Polygon(polygon, {
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'diamond',
                         width: 100,
                         height: 100,
@@ -5504,9 +6001,9 @@
                     { x: 45, y: 20 },
                     { x: 5, y: 20 }];
                     shape = new fabric.Polygon(polygon, {
-                        fill: '#fff',
+                        fill: '',
                         stroke: '#000',
-                        strokeWidth: 0,
+                        strokeWidth: 2,
                         objectType: 'parallelogram',
                         width: 100,
                         height: 100,
@@ -6822,6 +7319,20 @@
             }
         });
 
+        // let linebtn = document.getElementById("palleon-line-click-btn")
+        // console.log("Line Btn ::: ", linebtn)
+
+        // linebtn.addEventListener('click', () => {
+        //     canvas.isDrawingMode = true;
+        // })
+
+        // let linebtnOff = document.getElementById("palleon-line-click-btn-off")
+        // console.log("Line Btn ::: ", linebtn)
+
+        // linebtnOff.addEventListener('click', () => {
+        //     canvas.isDrawingMode = false;
+        // })
+
         // Brush Type Select
         selector.find('#palleon-brush-select').on('change', function () {
             var val = $(this).val();
@@ -7279,6 +7790,7 @@
             for (let i = 0; i < keys.length; i++) {
                 settings[keys[i]] = values[i];
             }
+            console.log("Setting For Local Storage ::: ", settings)
             localStorage.setItem("palleon-user-settings", JSON.stringify(settings));
             toastr.success(palleonParams.settingsaved, palleonParams.success);
         });
@@ -7326,9 +7838,9 @@
 
 
         //! Custom Code  
-        $.getJSON('http://192.168.29.156:5000/api/user/adminCategories')
+        $.getJSON(`${base_url}/api/user/adminCategories`)
             .done(function (data) {
-                console.log("Category Data ::: ", data?.result)
+                // console.log("Category Data ::: ", data?.result)
                 $.each(data?.result, function (index, value) {
                     // console.log("Category Name ::: ", value?.categoryName)
                     // TODO : Targetting Category Container's UL
@@ -7347,7 +7859,7 @@
                         if (value?._id) {
                             const data = { _id: value?._id };
                             $.ajax({
-                                url: 'http://192.168.29.156:5000/api/user/adminSubcategories',
+                                url: `${base_url}/api/user/adminSubcategories`,
                                 type: 'POST',
                                 contentType: 'application/json',
                                 data: JSON.stringify(data)
@@ -7355,6 +7867,8 @@
                                 console.log("Sub Category Data ::: ", data?.result);
 
                                 $.each(data?.result, function (index, category) {
+                                    console.log("Each Sub Category :: ", category)
+                                    console.log("Each Sub Category Name :: ", category?.subCategoryName)
                                     // TODO : Targetting Sub-Category Container's UL
                                     let subContainerUL = $('#' + value?.categoryName + ' .insert-sub-category');
                                     //! Create New List Item Element For Sub-Category Container's UL
@@ -7370,7 +7884,7 @@
 
                                         if (category?._id) {
                                             $.ajax({
-                                                url: 'http://192.168.29.156:5000/api/user/adminChildCategories',
+                                                url: `${base_url}/api/user/adminChildCategories`,
                                                 type: 'POST',
                                                 contentType: 'application/json',
                                                 data: JSON.stringify({ _id: category?._id })
@@ -7388,9 +7902,9 @@
 
                                                     let outerDivElement = $('<div>');
                                                     let innerDivElement = $('<div>').attr('id', 'palleon-frames-grid-watercolor').addClass('palleon-frames-grid paginated').attr('data-perpage', '4');
-                                                    let frameDivElement = $('<div>').addClass('palleon-frame').attr('data-elsource', "http://192.168.29.156:5000/" + childValue?.childCategoryImageSVG);
+                                                    let frameDivElement = $('<div>').addClass('palleon-frame').attr('data-elsource', `${base_url}/` + childValue?.childCategoryImageSVG);
                                                     let imageWrapperDivElement = $('<div>').addClass('palleon-img-wrap');
-                                                    let imgElement = $('<img>').attr('data-src', "http://192.168.29.156:5000/" + childValue?.childCategoryImage).addClass('lazy');
+                                                    let imgElement = $('<img>').attr('data-src', `${base_url}/` + childValue?.childCategoryImage).addClass('lazy');
                                                     let innerDivLoader = $('<div>').addClass('palleon-img-loader');
                                                     imageWrapperDivElement.append(innerDivLoader);
                                                     imageWrapperDivElement.append(imgElement);
@@ -7402,14 +7916,14 @@
                                                     childContainerUL.append(listItemChildContainer);
 
                                                     listItemChildContainer.on('click', function () {
-                                                        console.log("Clicked Image Parent List ::: ", listItemChildContainer);
+                                                        // console.log("Clicked Image Parent List ::: ", listItemChildContainer);
                                                         listItemChildContainer.addClass('opened');
                                                         imageWrapperDivElement.css('min-height', 'auto');
                                                         imgElement.addClass('entered loaded').attr('data-ll-status', 'loaded');
                                                         innerDivLoader.remove();
-                                                        imgElement.attr('src', "http://192.168.29.156:5000/" + childValue?.childCategoryImage);
+                                                        imgElement.attr('src', `${base_url}/` + childValue?.childCategoryImage);
                                                     });
-                                                    console.log("Svg Div", frameDivElement)
+                                                    // console.log("Svg Div", frameDivElement)
 
                                                     /* Add frame */
                                                     innerDivElement.on('click', '.palleon-frame img', function () {
