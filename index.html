@@ -759,7 +759,7 @@
                 <div id="paste-canvas-edit" class="palleon-icon-menu-title" style="cursor: pointer;">Paste</div>
                 <!-- <div class="palleon-icon-menu-title" style="cursor: pointer;">Canvas Resize</div> -->
                 <!-- <div class="palleon-icon-menu-title" style="cursor: pointer;">Select All</div> -->
-                <div id="group-canvas-edit" class="palleon-icon-menu-title" style="cursor: pointer;">Group/Ungroup</div>
+                <!-- <div id="group-canvas-edit" class="palleon-icon-menu-title" style="cursor: pointer;">Group/Ungroup</div> -->
             </div>
             <!--! Edit Menu End !-->
 
@@ -770,11 +770,16 @@
                     <span class="palleon-icon-menu-title">Zoom</span>
                 </div>
                 <div id="gridline-view" class="palleon-icon-menu-title" style="cursor: pointer;">Gridline</div>
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Reset</div>
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Ruler</div>
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Page Color</div>
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Alignment</div>
-                <div class="palleon-icon-menu-title" style="cursor: pointer;">Lock</div>
+
+                <div class="palleon-icon-menu-btn" style="cursor: pointer;" data-target="#palleon-page-color-canvas">
+                    <span class="palleon-icon-menu-title">Page Color</span>
+                </div>
+                <!-- <div class="palleon-icon-menu-title" style="cursor: pointer;">Page Color</div> -->
+
+                <!-- <div class="palleon-icon-menu-title" style="cursor: pointer;">Reset</div> -->
+                <!-- <div class="palleon-icon-menu-title" style="cursor: pointer;">Ruler</div> -->
+                <!-- <div class="palleon-icon-menu-title" style="cursor: pointer;">Alignment</div> -->
+                <!-- <div class="palleon-icon-menu-title" style="cursor: pointer;">Lock</div> -->
             </div>
             <!--! View Menu End !-->
 
@@ -823,6 +828,24 @@
                 </div>
             </div>
             <!-- View Zoom Start -->
+
+            <!-- View Page Color Start -->
+            <div id="palleon-page-color-canvas" class="palleon-icon-panel-content panel-hide">
+
+                <div id="palleon-save-file" type="button" class="palleon-icon-menu-btn" data-target="#palleon-view-menu"
+                    style="cursor: pointer; margin-bottom: 20px;">
+                    <span class="palleon-icon-menu-title">Back</span>
+                </div>
+
+                <div class="palleon-control-wrap control-text-color">
+                    <!-- <label class="palleon-control-label">Canvas Background</label> -->
+                    <div class="palleon-control">
+                        <input id="custom-image-background" type="text" class="palleon-colorpicker allow-empty"
+                            autocomplete="off" value="" />
+                    </div>
+                </div>
+            </div>
+            <!-- View Page Color Start -->
 
             <!-- Canvas START -->
             <div id="palleon-upload-canvas" class="palleon-icon-panel-content panel-hide">
@@ -2010,6 +2033,26 @@
                                     <line x1="180" y1="50" x2="170" y2="60" stroke="#000" stroke-width="2" />
                                 </svg>
                             </div>
+
+                            <div class="palleon-shape" data-id="customShape" title="customShape">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+                                    <!-- Cell membrane -->
+                                    <circle cx="50" cy="50" r="40" fill="lightblue" stroke="black" stroke-width="2" />
+
+                                    <!-- Nucleus -->
+                                    <circle cx="50" cy="50" r="12" fill="orange" stroke="black" stroke-width="2" />
+
+                                    <!-- Mitochondria -->
+                                    <circle cx="30" cy="30" r="5" fill="red" stroke="black" stroke-width="2" />
+                                    <circle cx="30" cy="70" r="5" fill="red" stroke="black" stroke-width="2" />
+                                    <circle cx="70" cy="30" r="5" fill="red" stroke="black" stroke-width="2" />
+                                    <circle cx="70" cy="70" r="5" fill="red" stroke="black" stroke-width="2" />
+
+                                    <!-- Cytoplasm -->
+                                    <ellipse cx="50" cy="50" rx="35" ry="25" fill="lightgreen" stroke="black"
+                                        stroke-width="2" />
+                                </svg>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2971,9 +3014,10 @@
                 if (document.fullscreenElement) {
                     document.exitFullscreen();
                 }
-            } else if (event.key === "f" && !event.ctrlKey && !event.metaKey) {
-                toggleFullScreen();
             }
+            // else if (event.key === "f" && !event.ctrlKey && !event.metaKey) {
+            //     toggleFullScreen();
+            // }
         });
     </script>
 

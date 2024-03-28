@@ -751,7 +751,7 @@
                 redoData();
             }
         }
-        document.addEventListener("keydown", handleKeyDown);
+        // document.addEventListener("keydown", handleKeyDown);
         //! Keyboard Event For Copy & Paste End
 
         //! Cut Start
@@ -1453,7 +1453,7 @@
         //     console.log("Canvas Active Data :: ", canvas.getActiveObjects())
         // }, 2000);
 
-        document.getElementById('group-canvas-edit').addEventListener('click', groupObjects)
+        // document.getElementById('group-canvas-edit').addEventListener('click', groupObjects)
         function groupObjects() {
             console.log("Group Clicked")
             var activeObjects = canvas.getActiveObjects();
